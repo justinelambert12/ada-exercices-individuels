@@ -1,12 +1,13 @@
 //ETAPE 1
 function getLatinCharacterList(text) {
-    let letters = [];
-    for (i=0; i<text.length; i++){
-        letters[i]=text[i];
-    }
-    return letters;
+    // let letters = [];
+    // for (i=0; i<text.length; i++){
+    //     letters[i]=text[i];
+    // }
+    // return letters;
+    //PLUS OPTIMISE
+    return text.split("")
 }
-
 //console.log(getLatinCharacterList("Hello world !"))
 
 //ETAPE 2
@@ -46,7 +47,6 @@ function translateLatinCharacter(latinCharacter) {
 
 //ETAPE 3
 function encode(textLatin){
-    let textMorse = "";
     let encoded_list = getLatinCharacterList(textLatin.toUpperCase());
     for (i=0; i<encoded_list.length; i++){
         if (encoded_list[i]==" "){
@@ -63,7 +63,7 @@ function encode(textLatin){
         }
     }
 
-    return textMorse;
+    return encoded_list.join("");
 }
 //console.log(encode("Hello, world !"));
 
@@ -138,3 +138,5 @@ function decode(textMorse){
     return textLatin;
 }
 console.log(decode(testMorse));
+
+//PLUS COURT : array.map() permet d'appliquer une fonction à chaque élément du tableau
