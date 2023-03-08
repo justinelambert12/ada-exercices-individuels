@@ -14,9 +14,10 @@ let textBornSup = document.getElementById('textBornSup');
 let player1Number;
 let nbTry = 0;
 
-function numberToGuess() { //Demande au joueur 1 un nombre + vérification que c'est bien un nombre
+//Demande au joueur 1 un nombre + vérification que c'est bien un nombre
+function numberToGuess() { 
     let isValid = false;
-    while (!isValid) {
+    while (!isValid) { //une meilleure solution serait de faire while(true) et de mettre le return pour la bonne condition
         let response = prompt("Joueur 1 : Choisissez un nombre compris entre 0 et 50.");
         player1Number = parseInt(response);
         if (isNaN(player1Number)){
