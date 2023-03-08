@@ -11,8 +11,8 @@ let tabExemple=[1,2,5,9,15,4];
 
 // ETAPE 2 : recursivite
 function sum2(tab) {
-    if (tab.length==1){
-        return tab[0];
+    if (tab.length==0){
+        return 0;
     } 
     else {
         return tab[0]+sum2(tab.slice(1)); //slice("indice a partir duquel faire l'extraction" , "indice de fin")
