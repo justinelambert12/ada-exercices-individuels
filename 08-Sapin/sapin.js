@@ -54,19 +54,34 @@ function beginNewPattern_etape2(lastFloor, indexPattern){
 // console.log(sapin_etape2(1), "sapin_etape2(1)")
 // console.log(sapin_etape2(2), "sapin_etape2(2)")
 // console.log(sapin_etape2(5), "sapin_etape2(5)")
-console.log(sapin_etape2(7), "sapin_etape2(7)")
-console.log(sapin_etape2(15), "sapin_etape2(15)")
+// console.log(sapin_etape2(7), "sapin_etape2(7)")
+// console.log(sapin_etape2(15), "sapin_etape2(15)")
 
 //ETAPE 3
 function sapin(number){
     let tree = ["  +", " /*\\", "/***\\"]
+    let stomp = ["  #"]
+
     if (number>1) {
-        for (let i=0; i<number-1; i++){
+        let floorAdditional = number-1
+        
+        for (let i=1; i<=floorAdditional; i++){
             let newFloor = createNewFloor(tree);
             tree=tree.map(e=>" "+e);
+            stomp=stomp.map(e=>" "+e)
             tree.push(newFloor);
         }
+
+        let numberOfPatterns = Math.floor((floorAdditional-2)/3)+1
+        console.log("nombre de patterns", numberOfPatterns);
+        if (numberOfPatterns>0){
+            stomp=stomp.map(e=>e.slice(0,-2)+"##")
+            for (let i=1; i<=numberOfPatterns; i++){
+                stomp.push(stomp[0])
+            }
+        }
     }
+    tree = tree.concat(stomp);
     return tree.join("\n")
 }
 
@@ -84,13 +99,14 @@ function createNewFloor(tree){
 }
 
 function beginNewPattern(lastFloor, indexPattern){
-    let newFloor = " ".repeat(indexPattern+1)+lastFloor.slice(0, -2-indexPattern*2)+lastFloor.slice(-2);
+    let newFloor=" "+lastFloor;
+    if (indexPattern>0){
+        newFloor=" "+newFloor.slice(0,-4)+newFloor.slice(-2);
+    }
     return newFloor;
 }
 
-// function addPattern
-
-// console.log(sapin(1), "sapin(1)")
-// console.log(sapin(2), "sapin(2)")
-// console.log(sapin(5), "sapin(5)")
-// console.log(sapin(7), "sapin(7)")
+console.log(sapin(1), "sapin(1)")
+console.log(sapin(2), "sapin(2)")
+console.log(sapin(5), "sapin(5)")
+console.log(sapin(7), "sapin(7)")
