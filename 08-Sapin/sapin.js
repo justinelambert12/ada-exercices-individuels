@@ -44,15 +44,18 @@ function createNewFloor_etape2(tree){
 }
 
 function beginNewPattern_etape2(lastFloor, indexPattern){
-    let newFloor = " ".repeat(indexPattern+1)+lastFloor.slice(0, -2-indexPattern*2)+lastFloor.slice(-2);
+    let newFloor=" "+lastFloor;
+    if (indexPattern>0){
+        newFloor=" "+newFloor.slice(0,-4)+newFloor.slice(-2);
+    }
     return newFloor;
 }
 
 // console.log(sapin_etape2(1), "sapin_etape2(1)")
 // console.log(sapin_etape2(2), "sapin_etape2(2)")
 // console.log(sapin_etape2(5), "sapin_etape2(5)")
-// console.log(sapin_etape2(7), "sapin_etape2(7)")
-// console.log(sapin_etape2(15), "sapin_etape2(15)")
+console.log(sapin_etape2(7), "sapin_etape2(7)")
+console.log(sapin_etape2(15), "sapin_etape2(15)")
 
 //ETAPE 3
 function sapin(number){
@@ -84,3 +87,10 @@ function beginNewPattern(lastFloor, indexPattern){
     let newFloor = " ".repeat(indexPattern+1)+lastFloor.slice(0, -2-indexPattern*2)+lastFloor.slice(-2);
     return newFloor;
 }
+
+// function addPattern
+
+// console.log(sapin(1), "sapin(1)")
+// console.log(sapin(2), "sapin(2)")
+// console.log(sapin(5), "sapin(5)")
+// console.log(sapin(7), "sapin(7)")
