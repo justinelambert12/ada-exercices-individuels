@@ -6,6 +6,7 @@ function tryWord(word, base) {
   	    let wellPlaced = [];
         let notInWord = [];
         let missplaced = [];
+        let indexWellPlaced = [];
     
   	    let arrayBase = (base.split('')).map(e=>e.toLowerCase());
         let arrayWord = (word.split('')).map(e=>e.toLowerCase());
@@ -17,6 +18,7 @@ function tryWord(word, base) {
 
             if (arrayBase[i] === arrayWord[i]) { //si la lettre est bien positionnée
                 wellPlaced.push(arrayWord[i]); //on l'ajoute au tableau des lettres bien positionnées
+                indexWellPlaced.push(i);
 
                 occurencesRemaining-=1;
                 if (occurencesRemaining < 0) { //il y a une occurrence de la lettre en trop dans le tableau des lettres mal placées
@@ -44,7 +46,7 @@ function tryWord(word, base) {
         //     }
         // }
     
-        return { wellPlaced: wellPlaced, missplaced: missplaced, notInWord: notInWord }
+        return { wellPlaced: wellPlaced, missplaced: missplaced, notInWord: notInWord, indexWellPlaced: indexWellPlaced }
     // }
 }
 
@@ -62,7 +64,7 @@ function guess() {
         document.getElementById("win").innerText = 'Vous avez gagné'
     }
 
-    displayWord(word);
+    displayWord(word, result);
 }
 
 function countOccurrences(element, array){
@@ -76,14 +78,28 @@ function countOccurrences(element, array){
 }
 // console.log(countOccurrences("a", "advantage".split("")));
 
-function displayWord(word){
-    let container = document.getElementById("container")
-    let div_word = document.createElement("div")
-    div_word.className = "displayedWord"
-    for (char of word) {
+function displayWord(word, result){
+    let container = document.getElementById("container");
+    let div_word = document.createElement("div");
+    div_word.className = "displayedWord";
+    for (let i=0; i<word.length; i++) {
+        let currentLetter = word[i];
+
+        let indexWellPlaced = result.indexWellPlaced;
+        let missPlaced = [...result.missplaced];
+
         let charToDisplay = document.createElement("span")
-        charToDisplay.innerText = char;
-        charToDisplay.className = "missPlaced"
+        charToDisplay.innerText = currentLetter;
+        //Ajout d'une classe à la lettre en fonction de si elle est bien ou mal placée
+        if (indexWellPlaced.includes(i)) {
+            charToDisplay.className = "wellPlaced";
+        } else if (missPlaced.includes(currentLetter)) {
+            charToDisplay.className = "missPlaced";
+            missPlaced.shift();
+        } else {
+            charToDisplay.className = "notInWord";
+        }        
+        
         div_word.appendChild(charToDisplay);
     }
     container.appendChild(div_word);
