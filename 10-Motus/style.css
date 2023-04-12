@@ -1,10 +1,15 @@
 #container {
     display: flex;
     flex-direction: column;
+    width: 20%;
+    text-align: center;
 }
 
 .displayedWord {
     border: solid black 1px;
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    margin: 5px;
 }
 
 .wellPlaced {
