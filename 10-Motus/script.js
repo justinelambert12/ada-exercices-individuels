@@ -61,6 +61,8 @@ function guess() {
     if (result.wellPlaced.length === base.length && result.missplaced.length===0 && result.notInWord.length===0) {
         document.getElementById("win").innerText = 'Vous avez gagné'
     }
+
+    displayWord(word);
 }
 
 function countOccurrences(element, array){
@@ -73,3 +75,16 @@ function countOccurrences(element, array){
     return count;
 }
 // console.log(countOccurrences("a", "advantage".split("")));
+
+function displayWord(word){
+    let container = document.getElementById("container")
+    let div_word = document.createElement("div")
+    div_word.className = "displayedWord"
+    for (char of word) {
+        let charToDisplay = document.createElement("span")
+        charToDisplay.innerText = char;
+        charToDisplay.className = "missPlaced"
+        div_word.appendChild(charToDisplay);
+    }
+    container.appendChild(div_word);
+}
