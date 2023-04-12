@@ -52,6 +52,7 @@ function guess() {
     let base = 'dictionnaire'
 	let word = document.getElementById("word").value
 	let result = tryWord(word, base)
+    document.getElementById("info").innerText = 'Le mot à trouver contient '+base.length+' lettres. La première lettre est : '+base[0];
     document.getElementById("word").value = ''
  	document.getElementById("try").innerText = word
     document.getElementById("well").innerText = 'Bien placé: '+result.wellPlaced.join(', ')
