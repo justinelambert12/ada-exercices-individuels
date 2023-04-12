@@ -12,15 +12,31 @@ function tryWord(word, base) {
     
 		// for (let i = 0; i < arrayBase.length-1; i++) {
         for (let i=0; i < arrayWord.length; i++) { //on parcourt le mot testé 
+            let occurencesRemaining = countOccurrences(arrayWord[i], arrayBase) - countOccurrences(arrayWord[i], wellPlaced) 
+                                        - countOccurrences(arrayWord[i], missplaced);
+
             if (arrayBase[i] === arrayWord[i]) { //si la lettre est bien positionnée
-                wellPlaced.push(arrayWord[i]);
-            } else if(arrayBase.includes(arrayWord[i])) { //sinon, si la lettre est dans le mot à deviner, elle est mal placée
-                missplaced.push(arrayWord[i])
-            } else { //sinon elle n'est pas dans le mot à deviner
-                notInWord.push(arrayWord[i]);
+                wellPlaced.push(arrayWord[i]); //on l'ajoute au tableau des lettres bien positionnées
+
+                occurencesRemaining-=1;
+                if (occurencesRemaining < 0) { //il y a une occurrence de la lettre en trop dans le tableau des lettres mal placées
+                    let indexToDelete = missplaced.indexOf(arrayWord[i]);
+                    missplaced.splice(indexToDelete,1) //on la supprime
+                    notInWord.push(arrayWord[i]) //on la passe dans le tableau des lettres pas dans le mot
+                }
+
+            } else if (occurencesRemaining > 0) { //il reste des occurrences de la lettre, elle est donc mal placée
+                    missplaced.push(arrayWord[i]);
+            } else { //il n'y a pas d'occurrence de la lettre, elle n'est donc pas dans le mot
+                    notInWord.push(arrayWord[i]);
             }
+         
+            // if(arrayBase.includes(arrayWord[i])) { //sinon, si la lettre est dans le mot à deviner, elle est mal placée
+            //     missplaced.push(arrayWord[i])
+            // } else { //sinon elle n'est pas dans le mot à deviner
+            //     notInWord.push(arrayWord[i]);
+            // }
         }
-        
         //Je gère ce bout de code plus haut
         // for (const char of arrayWord) {
         //     if (arrayBase.includes(char) === false) {
