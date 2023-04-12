@@ -1,19 +1,20 @@
 function tryWord(word, base) {
 	// TODO: fix jeu sensible à la casse.
-	if (word === base) {
-		return true
-    } else {
+	// if (word === base) {
+	// 	return true
+    // } else {
   	    let wellPlaced = [];
         let notInWord = [];
         let missplaced = [];
     
-  	    let arrayBase = base.split('');
-        let arrayWord = word.split('');
+  	    let arrayBase = (base.split('')).map(e=>e.toLowerCase());
+        let arrayWord = (word.split('')).map(e=>e.toLowerCase());
     
-		for (let i = 0; i < arrayBase.length-1; i++) {
+		// for (let i = 0; i < arrayBase.length-1; i++) {
+        for (let i=0; i < arrayBase.length; i++) {
             if (arrayBase[i] === arrayWord[i]) {
                 wellPlaced.push(arrayWord[i]);
-            }	else {
+            }	else if(arrayBase.includes(arrayWord[i])) { //il faut vérifier que la lettre est bien dans le mot à deviner pour dire qu'elle est mal placée
                 missplaced.push(arrayWord[i])
             }
         }
@@ -25,7 +26,7 @@ function tryWord(word, base) {
         }
     
         return { wellPlaced: wellPlaced, missplaced: missplaced, notInWord: notInWord }
-    }
+    // }
 }
 
 function guess() {
