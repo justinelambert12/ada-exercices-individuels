@@ -7,8 +7,10 @@
 
 .displayedWord {
     border: solid black 1px;
-    display: grid;
-    grid-template-columns: repeat(12, 1fr);
+    /* display: grid;
+    grid-template-columns: repeat(12, 1fr); */
+    display : flex;
+    justify-content: stretch;
     margin: 5px;
 }
 
@@ -16,16 +18,19 @@
     border: solid black 1px;
     background-color: red;
     color: white;
+    flex-grow: 1;
 }
 
 .missPlaced {
     border: solid black 1px;
     background-color: yellow;
     color: black;
+    flex-grow: 1;
 }
 
 .notInWord {
     border: solid black 1px;
     background-color: blue;
     color: white;
+    flex-grow: 1;
 }
