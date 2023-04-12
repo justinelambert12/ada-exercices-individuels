@@ -11,19 +11,22 @@ function tryWord(word, base) {
         let arrayWord = (word.split('')).map(e=>e.toLowerCase());
     
 		// for (let i = 0; i < arrayBase.length-1; i++) {
-        for (let i=0; i < arrayBase.length; i++) {
-            if (arrayBase[i] === arrayWord[i]) {
+        for (let i=0; i < arrayWord.length; i++) { //on parcourt le mot testé 
+            if (arrayBase[i] === arrayWord[i]) { //si la lettre est bien positionnée
                 wellPlaced.push(arrayWord[i]);
-            }	else if(arrayBase.includes(arrayWord[i])) { //il faut vérifier que la lettre est bien dans le mot à deviner pour dire qu'elle est mal placée
+            } else if(arrayBase.includes(arrayWord[i])) { //sinon, si la lettre est dans le mot à deviner, elle est mal placée
                 missplaced.push(arrayWord[i])
+            } else { //sinon elle n'est pas dans le mot à deviner
+                notInWord.push(arrayWord[i]);
             }
         }
-    
-        for (const char of arrayWord) {
-            if (arrayBase.includes(char) === false) {
-                notInWord.push(char)
-            }
-        }
+        
+        //Je gère ce bout de code plus haut
+        // for (const char of arrayWord) {
+        //     if (arrayBase.includes(char) === false) {
+        //         notInWord.push(char)
+        //     }
+        // }
     
         return { wellPlaced: wellPlaced, missplaced: missplaced, notInWord: notInWord }
     // }
