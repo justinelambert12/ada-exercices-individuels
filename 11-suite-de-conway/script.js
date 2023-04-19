@@ -43,5 +43,7 @@ function suiteConway(carac, n) {
     return carac+"\n"+suiteConway(decritChaine(carac), n-1)
 }
 
-console.log(suiteConway('a', 3))
-console.log(suiteConway('1', 3))
+// console.log(suiteConway('a', 3))
+// console.log(suiteConway('1', 3))
+// console.log(suiteConway('abbgppp', 5))
+// console.log(suiteConway('1', 10))
