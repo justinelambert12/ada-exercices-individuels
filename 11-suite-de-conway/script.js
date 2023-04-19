@@ -32,5 +32,16 @@ function decritChaine(chaine) {
     return result;
 }
 
-console.log(decritChaine("ab"))
-console.log(decritChaine("aabbca"))
+// console.log(decritChaine("ab"))
+// console.log(decritChaine("aabbca"))
+
+// ETAPE 3
+function suiteConway(carac, n) {
+    if (n<=1) {
+        return carac
+    }
+    return carac+"\n"+suiteConway(decritChaine(carac), n-1)
+}
+
+console.log(suiteConway('a', 3))
+console.log(suiteConway('1', 3))
