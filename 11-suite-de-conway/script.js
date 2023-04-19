@@ -4,9 +4,7 @@
 function decoupeChaine(chaine) {
     let result="";
     for (let char of chaine){
-        // console.log(char)
         let last_char = result.slice(-1);
-        // console.log(last_char)
         if (char!=last_char){
             result+=" ";
         }
@@ -15,5 +13,7 @@ function decoupeChaine(chaine) {
     return result;
 }
 
-console.log(decoupeChaine("ab"))
-console.log(decoupeChaine("aabbca"))
+// console.log(decoupeChaine("ab"))
+// console.log(decoupeChaine("aabbca"))
+
+// ETAPE 2
