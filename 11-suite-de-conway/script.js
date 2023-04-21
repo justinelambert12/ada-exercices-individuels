@@ -19,16 +19,16 @@ function decoupeChaine(chaine) {
 // ETAPE 2
 function decritChaine(chaine) {
     let result="";
-    let current_char="";
-    for (let char of chaine){
-        let last_char = current_char.slice(-1);
-        if (current_char.length>0 && char!=last_char){
-            result+=current_char.length+last_char
-            current_char="";
+    let current_string="";
+    for (let current_char of chaine){
+        let previous_char = current_string.slice(-1);
+        if (current_string.length>0 && current_char!=previous_char){
+            result+=current_string.length+previous_char
+            current_string="";
         }
-        current_char+=char;
+        current_string+=current_char;
     }
-    result+=current_char.length+current_char.slice(-1);
+    result+=current_string.length+current_string.slice(-1);
     return result;
 }
 
