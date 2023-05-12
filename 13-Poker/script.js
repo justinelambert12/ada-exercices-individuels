@@ -45,12 +45,6 @@ function deal(numberOfCards) {
     return playerHand;
 }
 
-let deck = createDeck();
-// console.log("deck", deck)
-const player1 = deal(2);
-const player2 = deal(2);
-// console.log("players hand", player1, player2)
-
 // ETAPE 3 : Tire le "flop" = les 5 cartes posées au centre du jeu
 function flop() {
     let cards = [];
@@ -67,5 +61,30 @@ function flop() {
     return cards;
 }
 
-let cards = flop();
-// console.log("cards on the board", cards);
+// Un tour :
+// let deck = createDeck();
+// // console.log("deck", deck)
+// const player1 = deal(2);
+// const player2 = deal(2);
+// // console.log("players hand", player1, player2)
+// let cards = flop();
+// // console.log("cards on the board", cards);
+
+// ETAPE 4 : approche orientee objet, introduction des cartes en classe
+class Card {
+    
+    constructor(value, color) {
+        if ([1,2,3,4,5,6,7,8,9,10,"J","Q","K"].includes(value) && ["♠︎","♣︎","♡","♢"].includes(color)) {
+            this.value = value;
+            this.color = color;
+        }
+    }
+
+    display() {
+        console.log(this.value+this.color);
+    }
+}
+// let exampleCard = new Card("J", "♠︎");
+// console.log(exampleCard);
+// exampleCard.display();
+
