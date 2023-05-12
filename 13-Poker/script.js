@@ -46,6 +46,26 @@ function deal(numberOfCards) {
 }
 
 let deck = createDeck();
+// console.log("deck", deck)
 const player1 = deal(2);
 const player2 = deal(2);
-console.log(player1, player2, deck)
+// console.log("players hand", player1, player2)
+
+// ETAPE 3 : Tire le "flop" = les 5 cartes posées au centre du jeu
+function flop() {
+    let cards = [];
+    // 1er tour : 1 carte brulee et 3 cartes sorties
+    deal(1);
+    cards = cards.concat(deal(3));
+    // 2e tour : 1 carte brulee et 1 carte sortie
+    deal(1);
+    cards = cards.concat(deal(1));
+    // 3e tour : 1 carte brulee et 1 carte sortie
+    deal(1);
+    cards = cards.concat(deal(1));
+
+    return cards;
+}
+
+let cards = flop();
+// console.log("cards on the board", cards);
