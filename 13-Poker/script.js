@@ -18,11 +18,11 @@ function shuffle(array) {
 
 function createDeck() {
     let deck = [];
-    ["♠︎", "♣︎","♡", "♢"].forEach(symbol => {
+    ["♠︎","♣︎","♡","♢"].forEach(symbol => {
         for (let i=1; i<=10; i++) {
             deck.push(i+symbol);
         }
-        ["J", "Q", "K"].forEach(head => {
+        ["J","Q","K"].forEach(head => {
             deck.push(head+symbol);
         })
     })
@@ -74,7 +74,8 @@ function flop() {
 class Card {
     
     constructor(value, color) {
-        if ([1,2,3,4,5,6,7,8,9,10,"J","Q","K"].includes(value) && ["♠︎","♣︎","♡","♢"].includes(color)) {
+        if (["1","2","3","4","5","6","7","8","9","10","J","Q","K"].includes(value) 
+        && ["♠︎","♣︎","♡","♢"].includes(color)) {
             this.value = value;
             this.color = color;
         }
@@ -88,3 +89,25 @@ class Card {
 // console.log(exampleCard);
 // exampleCard.display();
 
+// Je reecris une fonction pour créer un deck avec des objets Card
+function createDeckCards() {
+    let deck = [];
+    ["♠︎","♣︎","♡","♢"].forEach(symbol => {
+        for (let i=1; i<=10; i++) {
+            deck.push(new Card(`${i}`, symbol));
+        }
+        ["J","Q","K"].forEach(head => {
+            deck.push(new Card(head, symbol));
+        })
+    })
+    return shuffle(deck);
+}
+
+// Un tour :
+let deck = createDeckCards();
+// console.log(deck);
+const player1 = deal(2);
+const player2 = deal(2);
+// console.log("players hand", player1, player2);
+let flopCards = flop();
+// console.log("cards on the board", flopCards);
