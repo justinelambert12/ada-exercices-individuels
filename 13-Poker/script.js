@@ -176,9 +176,23 @@ class HandOfCards {
         return new HandOfCards(this.hand.concat(otherHand.hand));
     }
 
-    // METHODES IMPLEMENTEES PRECEDEMMENT
+    // METHODES IMPLEMENTEES PRECEDEMMENT POUR DISTRIBUER
     shuffle() { // modifie le paquet de cartes
         this.hand = shuffle(this.hand)
+    }
+
+    createDeck() { // à utiliser avec HandOfCards.prototype.createDeck()
+        let deck = new HandOfCards();
+        ["♠︎","♣︎","♡","♢"].forEach(symbol => {
+            for (let i=1; i<=10; i++) {
+                deck.addCard(new Card(`${i}`, symbol));
+            }
+            ["J","Q","K"].forEach(head => {
+                deck.addCard(new Card(head, symbol));
+            })
+        })
+        deck.shuffle();
+        return deck;
     }
 
     deal(numberOfCards) { // modifie le paquet de cartes
@@ -189,11 +203,31 @@ class HandOfCards {
                 dealHand.addCard(this.drawCard());
             }
         } else {
-            console.log("Pas assez de cartes dans le paquet.")
+            console.log(`Pas assez de cartes dans le paquet pour en tirer ${numberOfCards} (${this.getNumberOfCards()} restante(s)).`)
         }
         return dealHand;
     }
 
+    flop() { // modifie le paquet de cartes
+        let flopCards = new HandOfCards();
+        if (this.getNumberOfCards() >= 8) {
+            // 1er tour : 1 carte brulee et 3 cartes sorties
+            this.deal(1);
+            flopCards.addHand(this.deal(3));
+            // 2e tour : 1 carte brulee et 1 carte sortie
+            this.deal(1);
+            flopCards.addHand(this.deal(1));
+            // 3e tour : 1 carte brulee et 1 carte sortie
+            this.deal(1);
+            flopCards.addHand(this.deal(1));
+        } else {
+            console.log(`Pas assez de cartes pour le flop (${this.getNumberOfCards()} carte(s) restante(s)).`)
+        }
+
+        return flopCards;
+    }
+
+    // NOUVELLES METHODES POUR DETERMINER LES COMBINAISONS
     hasAce() {
         for (let i=0; i<this.getNumberOfCards(); i++) {
             if (this.hand[i].isAce()) {
@@ -246,24 +280,10 @@ class HandOfCards {
     }
 }
 
-// Je reecris une fonction pour créer un objet HandOfCards "deck" avec des objets Card
-function createDeckCards() {
-    let array = [];
-    ["♠︎","♣︎","♡","♢"].forEach(symbol => {
-        for (let i=1; i<=10; i++) {
-            array.push(new Card(`${i}`, symbol));
-        }
-        ["J","Q","K"].forEach(head => {
-            array.push(new Card(head, symbol));
-        })
-    })
-    let deck = new HandOfCards(array);
-    deck.shuffle();
-    return deck;
-}
+// TESTS POUR LES METHODES CREES
 // let emptyDeck = new HandOfCards();
 // console.log(emptyDeck);
-// let exampleDeck = createDeckCards();
+// let exampleDeck = HandOfCards.prototype.createDeck();
 // exampleDeck.display();
 // exampleDeck.sortByValue();
 // exampleDeck.display();
@@ -272,14 +292,15 @@ function createDeckCards() {
 // exampleDeck.sortByValue();
 // exampleDeck.display();
 
+// TESTS DE L'ETAPE 4
 // // Un tour :
-// let deck = createDeckCards();
-// // console.log(deck);
-// const player1 = deal(2);
-// const player2 = deal(2);
-// // console.log("players hand", player1, player2);
-// let flopCards = flop();
-// // console.log("cards on the board", flopCards);
+// const deck = HandOfCards.prototype.createDeck();
+// console.log("deck shuffled: ", `${deck.toString()}`);
+// const player1 = deck.deal(2);
+// const player2 = deck.deal(2);
+// console.log("players hand: ", `P1: ${player1.toString()}`, `\\ P2: ${player2.toString()}`);
+// const flopCards = deck.flop();
+// console.log("cards on the board: ", `${flopCards.toString()}`);
 
 // ETAPE 5 : 
 // Fonction qui retourne une string decrivant la main d'un joueur ou le board ou le deck
