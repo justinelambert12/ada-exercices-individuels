@@ -1,5 +1,6 @@
 // https://github.com/adatechschool/Exercices-individuels-Doria-Shafik-Paris/blob/master/13_poker.md
 
+// IMPLEMENTATION EN POO A PARTIR DE L'ETAPE 4 PLUS BAS. SEULE LA FONCTION "shuffle" EST UTILISEE
 // ETAPE 1 : generation du deck
 function shuffle(array) {
     // Je fais une copie du tableau en entrée pour ne pas le modifier directement
@@ -15,7 +16,7 @@ function shuffle(array) {
     // console.log(shuffledArr);
     return shuffledArr;
 }
-
+// ====================================================================================================================================
 function createDeck() {
     let deck = [];
     ["♠︎","♣︎","♡","♢"].forEach(symbol => {
@@ -60,7 +61,8 @@ function flop() {
 
     return cards;
 }
-
+// TESTS POUR LES 2 PREMIERES ETAPES
+// -----------------------------------------------
 // Un tour :
 // let deck = createDeck();
 // // console.log("deck", deck)
@@ -69,6 +71,9 @@ function flop() {
 // // console.log("players hand", player1, player2)
 // let cards = flop();
 // // console.log("cards on the board", cards);
+// -----------------------------------------------
+
+// ====================================================================================================================================
 
 // ETAPE 4 : approche orientee objet, introduction des cartes en classe
 class Card {
@@ -128,8 +133,10 @@ class Card {
         return (sortedValues.indexOf(this.value) === sortedValues.indexOf(otherCard.value)+1); 
     }
 }
-let exampleCard = new Card("1", "♠︎");
-let otherExampleCard = new Card("1","♡");
+// -----------------------------------------------
+// TESTS POUR LES METHODES DES OBJETS Card
+// let exampleCard = new Card("1", "♠︎");
+// let otherExampleCard = new Card("1","♡");
 // console.log(exampleCard);
 // exampleCard.display();
 // console.log("isSuite :", exampleCard.isSuiteOf(otherExampleCard));
@@ -137,6 +144,7 @@ let otherExampleCard = new Card("1","♡");
 // exampleCard.setOneToAce();
 // exampleCard.display();
 // console.log("isAce :", exampleCard.isAce());
+// -----------------------------------------------
 
 // Je crée une classe pour gérer les ensembles de cartes
 class HandOfCards {
@@ -279,8 +287,8 @@ class HandOfCards {
         this.hand = sortedHand;
     }
 }
-
-// TESTS POUR LES METHODES CREES
+// -----------------------------------------------
+// TESTS POUR LES METHODES DES OBJETS HandOfCards
 // let emptyDeck = new HandOfCards();
 // console.log(emptyDeck);
 // let exampleDeck = HandOfCards.prototype.createDeck();
@@ -301,100 +309,24 @@ class HandOfCards {
 // console.log("players hand: ", `P1: ${player1.toString()}`, `\\ P2: ${player2.toString()}`);
 // const flopCards = deck.flop();
 // console.log("cards on the board: ", `${flopCards.toString()}`);
+// -----------------------------------------------
 
-// ETAPE 5 : 
-// Fonction qui retourne une string decrivant la main d'un joueur ou le board ou le deck
-function handToString(hand) {
-    let string = hand.reduce((acc, card) => {
-        return acc + " " + card.toString();
-    });
-    return string;
-}
-// console.log(handToString(player1));
-
-// Fonction pour trier les cartes par ordre de valeurs croissantes
-function sortCardsByValue(cards) {
-
-} 
-
-// Fonction pour savoir si c'est une suite
-function isSuite(cards) {
-    // je définis une correspondance numérique des valeurs cartes
-    const valueCorrespondance = {
-        "1": 1,
-        "2": 2,
-        "3": 3,
-        "4": 4,
-        "5": 5,
-        "6": 6,
-        "7": 7,
-        "8": 8,
-        "9": 9,
-        "10": 10,
-        "J": 11,
-        "Q": 12,
-        "K": 13
-    }
-    let sortedCards = [];
-    let sortedValues = [];
-
-    // je trie les cartes par valeur croissante et s'il y a un doublon je renvoie false
-    cards.forEach(card => {
-        let numValue = valueCorrespondance[card.value];
-        if (sortedCards.length == 0){
-            sortedCards.push(card);
-            // je stocke les valeurs numeriques dans un tableau pour placer plus facilement les cartes dans l'ordre
-            sortedValues.push(numValue);
-        } else {
-            // je m'alerte sur le fait qu'il y a des cartes de la meme valeur
-            if (sortedValues.includes(numValue)) {
-                console.log(`Au moins 2 cartes de meme valeur : ${card.value}`);
-            }
-            // je place la carte et la valeur numerique au bon endroit dans les tableaux respectifs (valeur croissante avec 1 en plus petit)
-            for (let i=0; i<sortedValues.length; i++) {
-                if (numValue < sortedValues[i]) {
-                    sortedCards.splice(i, 0, card);
-                    sortedValues.splice(i, 0, numValue);
-                    break; // pas besoin de continuer a parcourir le tableau
-                }
-
-                if (i == sortedCards.length-1) { //on est arrive au bout du tableau trie, j'ajoute la carte a la fin
-                    sortedCards.push(card);
-                    sortedValues.push(numValue);
-                }
-            }  
-        }
-    });
-    console.log(`Les cartes triees en ordre croissant : ${handToString(sortedCards)}`);
-
-    // je vérifie si 5 cartes triées forment une suite grace au tableau des valeurs numériques
-    // La carte de l'as peut se mettre en debut de suite (avant un 2) ou en fin de suite (après un roi).
-    // je crée un tableau dans lequel je mets les cartes qui se suivent s'il y en a bien 5
-    let suite = [sortedCards[0]];
-    for (let i=0; i<sortedValues-1; i++) {
-        if (sortedValues[i+1] == sortedValues[i]) {
-            // rien ne se passe
-        } else if (sortedValues[i+1] == sortedValues[i]+1) { // la suite se poursuit quand les cartes se suivent
-            suite.push(sortedCards[i+1]);
-        } else if (sortedValues.length - i > 5) { // sinon, tant qu'il reste 5 cartes à vérifier on peut recommencer la suite
-            suite = sortedCards[i];
-        } else { // sinon il n'y a pas de suite de 5 cartes
-            suite = [];
-            break;
-        }
-    }
-    // Si l'as était au début, je retente en le mettant à la fin
-    if (sortedValues[0])
-
-
-    return isSuite;
-    
-}
+// ETAPE 5 : Afficher la plus haute combinaison que le joueur peut faire
 
 // Fonction pour annoncer la main du joueur (paire, brelan, carre, couleur, suite, quinte) 
 function showdown(playerHand, flop) {
-    console.log(`flop: ${handToString(flop)} / player: ${handToString(playerHand)}`);
+    console.log(`flop: ${flop.toString()} / player: ${playerHand.toString()}`);
     let allCards = playerHand.concat(flop);
-    isSuite(allCards);
+    
 }
+// -----------------------------------------------
+// TESTS DE L'ETAPE 5
+// // Un tour :
+// const deck = HandOfCards.prototype.createDeck();
+// const player1 = deck.deal(2);
+// const player2 = deck.deal(2);
+// console.log("players hand: ", `P1: ${player1.toString()}`, `\\ P2: ${player2.toString()}`);
+// const flopCards = deck.flop();
+// console.log("cards on the board: ", `${flopCards.toString()}`);
 // showdown(player1, flopCards);
+// -----------------------------------------------
