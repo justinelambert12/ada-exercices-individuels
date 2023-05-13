@@ -90,7 +90,22 @@ class Card {
         return this.value+this.color;
     }
 
+    setOneToAce() {
+        if (this.value === "1") {
+            this.value = "A";
+        }
+    }
+
+    setAceToOne() {
+        if (this.value === "A") {
+            this.value = "1";
+        }
+    }
+
     hasSameValueAs(otherCard) {
+        if (this.value === "1" || this.value === "A") {
+            return (otherCard.value === "1" || otherCard.value === "A")
+        }
         return (this.value === otherCard.value);
     }
 
@@ -98,14 +113,15 @@ class Card {
         return (this.color === otherCard.color);
     }
 
+    hasHigherValueAs(otherCard) {
+        const sortedValues = ["1","2","3","4","5","6","7","8","9","10","J","Q","K","A"];
+        return (sortedValues.indexOf(this.value) > sortedValues.indexOf(otherCard.value));
+    }
+
     isSuiteOf(otherCard) {
-        const sortedValues = ["1","2","3","4","5","6","7","8","9","10","J","Q","K"];
-        // si l'autre carte est un as, la carte actuelle doit être un roi pour qu'elles soient à la suite
-        if (otherCard.value === "1") { 
-            return (this.value === "K")
-        }
-        // sinon il faut que les deux valeurs soient à la suite dans le tableau "sortedValues"
-        return (sortedValues.indexOf(this.value) === sortedValues.indexOf(otherCard.value)+1) 
+        const sortedValues = ["1","2","3","4","5","6","7","8","9","10","J","Q","K","A"];
+        // Je gèrerai la transformation du 1 en A (pour l'as) autre part
+        return (sortedValues.indexOf(this.value) === sortedValues.indexOf(otherCard.value)+1); 
     }
 }
 // let exampleCard = new Card("J", "♠︎");
@@ -145,7 +161,12 @@ function handToString(hand) {
 }
 // console.log(handToString(player1));
 
-// Fonction pour trier les cartes par ordre de valeurs croissantes et savoir si c'est une suite
+// Fonction pour trier les cartes par ordre de valeurs croissantes
+function sortCardsByValue(cards) {
+
+} 
+
+// Fonction pour savoir si c'est une suite
 function isSuite(cards) {
     // je définis une correspondance numérique des valeurs cartes
     const valueCorrespondance = {
