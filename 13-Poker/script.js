@@ -72,10 +72,11 @@ function flop() {
 
 // ETAPE 4 : approche orientee objet, introduction des cartes en classe
 class Card {
-    
     constructor(value, color) {
-        if (["1","2","3","4","5","6","7","8","9","10","J","Q","K"].includes(value) 
-        && ["♠︎","♣︎","♡","♢"].includes(color)) {
+        const availableValues = ["1","2","3","4","5","6","7","8","9","10","J","Q","K","A"];
+        const availableColors = ["♠︎","♣︎","♡","♢"];
+        if (availableValues.includes(value) 
+        && availableColors.includes(color)) {
             this.value = value;
             this.color = color;
         }
@@ -87,6 +88,24 @@ class Card {
 
     toString() {
         return this.value+this.color;
+    }
+
+    hasSameValueAs(otherCard) {
+        return (this.value === otherCard.value);
+    }
+
+    hasSameColorAs(otherCard) {
+        return (this.color === otherCard.color);
+    }
+
+    isSuiteOf(otherCard) {
+        const sortedValues = ["1","2","3","4","5","6","7","8","9","10","J","Q","K"];
+        // si l'autre carte est un as, la carte actuelle doit être un roi pour qu'elles soient à la suite
+        if (otherCard.value === "1") { 
+            return (this.value === "K")
+        }
+        // sinon il faut que les deux valeurs soient à la suite dans le tableau "sortedValues"
+        return (sortedValues.indexOf(this.value) === sortedValues.indexOf(otherCard.value)+1) 
     }
 }
 // let exampleCard = new Card("J", "♠︎");
