@@ -92,29 +92,26 @@ class HandOfCards {
         }
     }
 
+    // METHODES MANIPULANT DIRECTEMENT LES PROPRIETES DE HandOfCards (this.hand)
     toString() {
         return (this.hand.map(card => card.toString()).join(" "))
     }
 
-    display() {
-        console.log(this.toString());
+    getHand() {
+        return [...this.hand];
     }
 
     getNumberOfCards() {
         return this.hand.length;
     }
 
-    getCardAtIndex(index) {
-        return this.hand[index];
-    }
-
-    addCard(card) { // modifie le paquet de cartes
-        this.hand.push(card);
-    }
-
-    // Tire la première carte du paquet
-    drawCard() { // modifie le paquet de cartes
-        return this.hand.shift();
+    addCard(card, index) { // modifie le paquet de cartes
+        // si l'index n'est pas renseigné ou invalide, on met la carte à la fin du paquet
+        if (!index || !(index < this.getNumberOfCards() && index >= 0)) {
+            this.hand.push(card);
+        } else { // si l'index est valide, on insère la carte au bon endroit
+            this.hand.splice(index, 0, card)
+        }
     }
 
     extractCardAtIndex(index) { // modifie le paquet de cartes
@@ -127,11 +124,41 @@ class HandOfCards {
     }
 
     addHand(otherHand) { // modifie le paquet de cartes
-        this.hand = this.hand.concat(otherHand.hand);
+        this.hand = this.getHand().concat(otherHand.getHand());
     }
 
+    setOnesToAces() { // modifie le paquet de cartes
+        this.hand = this.hand.map(function(card) {
+            card.setOneToAce();
+            return card;
+        });
+    }
+
+    setAcesToOnes() { // modifie le paquet de cartes
+        this.hand = this.hand.map(function(card) {
+            card.setAceToOne();
+            return card;
+        });
+    }
+
+    // METHODES DE MANIPULATIONS SIMPLES DES OBJETS HandOfCards
+
+    display() {
+        console.log(this.toString());
+    }
+
+    getCardAtIndex(index) {
+        return this.getHand()[index];
+    }
+
+    // Tire la première carte du paquet
+    drawCard() { // modifie le paquet de cartes
+        return this.extractCardAtIndex(0);
+    }
+
+    // Renvoie un nouveau deck composé des deux decks
     concatHands(otherHand) { 
-        return new HandOfCards(this.hand.concat(otherHand.hand));
+        return new HandOfCards(this.getHand().concat(otherHand.getHand()));
     }
 
     // METHODES POUR DISTRIBUER
@@ -197,36 +224,22 @@ class HandOfCards {
     // METHODES POUR DETERMINER LES COMBINAISONS
     hasAce() {
         for (let i=0; i<this.getNumberOfCards(); i++) {
-            if (this.hand[i].isAce()) {
+            if (this.getCardAtIndex(i).isAce()) {
                 return true;
             }
         }
         return false;
     }
 
-    setOnesToAces() { // modifie le paquet de cartes
-        this.hand = this.hand.map(function(card) {
-            card.setOneToAce();
-            return card;
-        });
-    }
-
-    setAcesToOnes() { // modifie le paquet de cartes
-        this.hand = this.hand.map(function(card) {
-            card.setAceToOne();
-            return card;
-        });
-    }
-
     getLastCard() {
-        return this.hand[this.getNumberOfCards-1];
+        return this.getCardAtIndex(this.getNumberOfCards-1);
     }
 
     getHighestCardIndex() {
         let index = 0;
-        let highestCard = this.hand[0];
+        let highestCard = this.getCardAtIndex(0);
         for (let i=1; i<this.getNumberOfCards(); i++) {
-            let currentCard = this.hand[i];
+            let currentCard = this.getCardAtIndex(i);
             if (currentCard.hasHigherValueAs(highestCard)) {
                 index = i;
                 highestCard = currentCard;
@@ -236,27 +249,27 @@ class HandOfCards {
     }
 
     getHighestCard() {
-        return this.hand[this.getHighestCardIndex()];
+        return this.getCardAtIndex(this.getHighestCardIndex());
     }
 
     extractHighestCard() { // modifie le paquet de cartes
-        return (this.hand.splice(this.getHighestCardIndex(), 1).shift());
-        //"splice(...)" renvoie un tableau contenant une Card, je renvoie la Card simplement
+        return this.extractCardAtIndex(this.getHighestCardIndex());
     }
 
     // Range le deck en valeurs croissantes
     sortByValue() { // modifie le paquet de cartes
-        let sortedHand = [];
+        let sortedHand = new HandOfCards();
         // je sors les cartes les plus élevées du deck et je les mets au début du nouveau deck une à une
         while (this.getNumberOfCards() > 0) {
-            sortedHand.unshift(this.extractHighestCard());
+            sortedHand.addCard(this.extractHighestCard(), 0);
         }
-        this.hand = sortedHand;
+        // je fusionne mon deck vide avec le deck trié
+        this.addHand(sortedHand);
     }
 
     // Retourne un nouveau deck rangé en valeurs croissantes à partir du deck actuel
     getSortedByValue() {
-        let newHand = new HandOfCards(this.hand);
+        let newHand = new HandOfCards(this.getHand());
         newHand.sortByValue();
         return newHand;
     }
@@ -325,7 +338,6 @@ class HandOfCards {
 // exampleDeck.sortByValue();
 // exampleDeck.display();
 // let exArrCards = [new Card("1", "s"), new Card("K", "h"), new Card("3", "c"), new Card("2", "d")];
-// console.log(exArrCards);
 // let exDeckCards = new HandOfCards(exArrCards);
 // exDeckCards.display();
 // exArrCards.shift();
