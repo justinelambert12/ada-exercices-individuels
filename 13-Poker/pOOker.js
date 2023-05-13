@@ -85,6 +85,9 @@ class HandOfCards {
     constructor(arrayOfCards) {
         if (!arrayOfCards) {
             this.hand = [];
+        } else if (!Array.isArray(arrayOfCards)) {
+            console.log(`"${arrayOfCards}" n'est pas un tableau`)
+            this.hand = [];
         } else {
             // important d'associer une copie du tableau et non le tableau lui-même,
             // sinon en modifiant le tableau, on modifie le deck aussi
@@ -128,10 +131,14 @@ class HandOfCards {
     }
 
     setOnesToAces() { // modifie le paquet de cartes
-        this.hand = this.hand.map(function(card) {
+        let newHand = this.getHand().map(function(card) {
             card.setOneToAce();
+            // console.log("setOneToAce after", card);
             return card;
         });
+        // console.log("hand after setOneToAce", newHand)
+        // console.log("isArray", Array.isArray(newHand))
+        this.hand = newHand;
     }
 
     setAcesToOnes() { // modifie le paquet de cartes
@@ -148,7 +155,11 @@ class HandOfCards {
     }
 
     getCardAtIndex(index) {
-        return this.getHand()[index];
+        if (index < this.getNumberOfCards() && index >=0) {
+            return this.getHand()[index];
+        } else {
+            console.log(`Index "${index}" invalide pour l'objet : ${this}`)
+        }
     }
 
     // Tire la première carte du paquet
@@ -223,9 +234,11 @@ class HandOfCards {
 
     // METHODES POUR DETERMINER LES COMBINAISONS
     hasAce() {
-        for (let i=0; i<this.getNumberOfCards(); i++) {
-            if (this.getCardAtIndex(i).isAce()) {
-                return true;
+        if (this.getNumberOfCards() > 0) {
+            for (let i=0; i<this.getNumberOfCards(); i++) {
+                if (this.getCardAtIndex(i).isAce()) {
+                    return true;
+                }
             }
         }
         return false;
@@ -274,55 +287,70 @@ class HandOfCards {
         return newHand;
     }
 
-    // Retourne la suite la plus longue (si plusieurs, celle avec la plus haute valeur en dernier)
-    getLongestSuite(minimalLength) {
+    // Retourne la suite de longueur imposée avec la plus haute valeur de carte (si elle existe, sinon HandOfCards vide)
+    getSuite(suiteLength) {
         let arrayOfSuites = [];
-        let longestSuite = new HandOfCards();
-        if (this.getNumberOfCards() >= minimalLength) {
-            let sortedHand = this.sortByValue();
+        let strongestSuite = new HandOfCards();
+        if (this.getNumberOfCards() >= suiteLength) {
+            let sortedHand = this.getSortedByValue();
             // je mets la première carte de la main triée dans la suite que je constitue
             let currentSuite = new HandOfCards(sortedHand.drawCard());
             sortedHand.forEach((card, index) => {
                 // Si la carte ne complète pas la suite, je mets la suite actuelle dans le tableau si elle est de bonne taille
                 // et je commence une nouvelle suite avec la carte actuelle
                 if (!card.isSuiteOf(currentSuite.getLastCard())){
-                    if (currentSuite.getNumberOfCards() >= minimalLength) {
+                    if (currentSuite.getNumberOfCards() === suiteLength) {
                         arrayOfSuites.push(currentSuite);
                     }
                     currentSuite = new HandOfCards()
+                } else if (currentSuite.getNumberOfCards() === suiteLength) {
+                    // la suite contient déjà le bon nombre de cartes, on enlève la première de plus petite valeur
+                    // pour pouvoir ajouter la suivante
+                    currentSuite.drawCard();
                 }
                 currentSuite.addCard(card);
 
                 //si c'est la dernière carte, je fais les vérifications et m'occupe de cette dernière suite
                 if (index === sortedHand.getNumberOfCards()-1) {
-                    if (currentSuite.getNumberOfCards() >= minimalLength) {
+                    if (currentSuite.getNumberOfCards() === suiteLength) {
                         arrayOfSuites.push(currentSuite);
                     }
                 }
             });
         }
 
+        // Je parcours la liste des suites valides (longueur = longueur imposée) s'il y en a
         if (arrayOfSuites.length > 0) {
-            
+            arrayOfSuites.forEach(currentSuite => {
+                // je sélectionne la suite avec la carte de plus haute valeur
+                if (currentSuite.getHighestCard().hasHigherValueAs(strongestSuite.getHighestCard())) {
+                    strongestSuite = currentSuite;
+                }
+            })
         }
 
-        return longestSuite;
+        return strongestSuite;
     }
 
+    // Retourne la suite de taille imposée avec la plus haute valeur de carte en prenant en compte les deux valeurs de l'as
     getHighestSuite(suiteLength) {
-        let highestSuiteWithOne = new HandOfCards();
-        let highestSuiteWithAce = new HandOfCards();
-        if (this.getNumberOfCards() >= suiteLength) {
-            let sortedHandWithOne = this.getSortedByValue();
-
-
-            if (this.hasAce()) {
-                let sortedHandWithAce = sortedHandWithOne.setOnesToAces().getSortedByValue();
-            }
+        // S'il y a un as je retourne la suite de taille imposée qui le place après le roi (suite la plus forte)
+        // seulement si elle existe.
+        // console.log("this.getHand()", this.getHand());
+        // console.log("this.hand", this.hand);
+        if (this.hasAce()) {
+            console.log("avant creation du deckWithAces OK");
+            let deckWithAces = new HandOfCards(this.getHand());
+            console.log("deckwithAces before setOnesToAces", deckWithAces)
+            deckWithAces.setOnesToAces();
+            let highestSuiteWithAce = deckWithAces.getSuite(suiteLength);
             
+            if (highestSuiteWithAce.getNumberOfCards() > 0) {
+                return highestSuiteWithAce;
+            }
         }
-
-        return highestSuite;
+        // Sinon je renvoie la suite de taille imposée si elle existe
+        return this.getSuite(suiteLength);
     }
 }
 // -----------------------------------------------
@@ -337,9 +365,12 @@ class HandOfCards {
 // exampleDeck.display();
 // exampleDeck.sortByValue();
 // exampleDeck.display();
-// let exArrCards = [new Card("1", "s"), new Card("K", "h"), new Card("3", "c"), new Card("2", "d")];
-// let exDeckCards = new HandOfCards(exArrCards);
+let exArrCards = [new Card("1", "s"), new Card("K", "h"), new Card("Q", "c"), new Card("J", "d")];
+let exDeckCards = new HandOfCards(exArrCards);
 // exDeckCards.display();
+// console.log("exDeckCards", exDeckCards);
+console.log("getHighestSuite", exDeckCards.getSuite(3));
+console.log("getHighestSuite", exDeckCards.getHighestSuite(4));
 // exArrCards.shift();
 // exDeckCards.display();
 // exDeckCards.shuffle();
