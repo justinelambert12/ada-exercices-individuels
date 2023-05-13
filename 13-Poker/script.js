@@ -141,7 +141,11 @@ let otherExampleCard = new Card("1","♡");
 // Je crée une classe pour gérer les ensembles de cartes
 class HandOfCards {
     constructor(arrayOfCards) {
-        this.hand = arrayOfCards;
+        if (!arrayOfCards) {
+            this.hand = [];
+        } else {
+            this.hand = arrayOfCards;
+        }
     }
 
     toString() {
@@ -156,8 +160,38 @@ class HandOfCards {
         return this.hand.length;
     }
 
+    addCard(card) { // modifie le paquet de cartes
+        this.hand.push(card);
+    }
+
+    drawCard() { // modifie le paquet de cartes
+        return this.hand.shift();
+    }
+
+    addHand(otherHand) { // modifie le paquet de cartes
+        this.hand = this.hand.concat(otherHand.hand);
+    }
+
+    concatHands(otherHand) { 
+        return new HandOfCards(this.hand.concat(otherHand.hand));
+    }
+
+    // METHODES IMPLEMENTEES PRECEDEMMENT
     shuffle() { // modifie le paquet de cartes
         this.hand = shuffle(this.hand)
+    }
+
+    deal(numberOfCards) { // modifie le paquet de cartes
+        let dealHand = new HandOfCards();
+        if (numberOfCards < this.getNumberOfCards()) {
+            for (let i=0; i<numberOfCards; i++){
+                // Retire la premiere carte du paquet et la met dans la main du deal
+                dealHand.addCard(this.drawCard());
+            }
+        } else {
+            console.log("Pas assez de cartes dans le paquet.")
+        }
+        return dealHand;
     }
 
     hasAce() {
@@ -197,7 +231,7 @@ class HandOfCards {
     }
 
     extractHighestCard() { // modifie le paquet de cartes
-        return (this.hand.splice(this.gettHighestCardIndex(), 1))[0];
+        return (this.hand.splice(this.gettHighestCardIndex(), 1).shift());
         //"splice(...)" renvoie un tableau contenant une Card, je renvoie la Card simplement
     }
 
@@ -227,7 +261,8 @@ function createDeckCards() {
     deck.shuffle();
     return deck;
 }
-
+// let emptyDeck = new HandOfCards();
+// console.log(emptyDeck);
 // let exampleDeck = createDeckCards();
 // exampleDeck.display();
 // exampleDeck.sortByValue();
