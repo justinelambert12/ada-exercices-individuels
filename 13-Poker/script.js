@@ -172,6 +172,7 @@ class HandOfCards {
         this.hand.push(card);
     }
 
+    // Tire la première carte du paquet
     drawCard() { // modifie le paquet de cartes
         return this.hand.shift();
     }
@@ -259,7 +260,11 @@ class HandOfCards {
         });
     }
 
-    gettHighestCardIndex() {
+    getLastCard() {
+        return this.hand[this.getNumberOfCards-1];
+    }
+
+    getHighestCardIndex() {
         let index = 0;
         let highestCard = this.hand[0];
         for (let i=1; i<this.getNumberOfCards(); i++) {
@@ -272,8 +277,12 @@ class HandOfCards {
         return index;
     }
 
+    getHighestCard() {
+        return this.hand[this.getHighestCardIndex()];
+    }
+
     extractHighestCard() { // modifie le paquet de cartes
-        return (this.hand.splice(this.gettHighestCardIndex(), 1).shift());
+        return (this.hand.splice(this.getHighestCardIndex(), 1).shift());
         //"splice(...)" renvoie un tableau contenant une Card, je renvoie la Card simplement
     }
 
@@ -285,6 +294,64 @@ class HandOfCards {
             sortedHand.unshift(this.extractHighestCard());
         }
         this.hand = sortedHand;
+    }
+
+    // Retourne un nouveau deck rangé en valeurs croissantes à partir du deck actuel
+    getSortedByValue() {
+        let newHand = new HandOfCards(this.hand);
+        newHand.sortByValue();
+        return newHand;
+    }
+
+    // Retourne la suite la plus longue (si plusieurs, celle avec la plus haute valeur en dernier)
+    getLongestSuite(minimalLength) {
+        let arrayOfSuites = [];
+        let longestSuite = new HandOfCards();
+        if (this.getNumberOfCards() >= minimalLength) {
+            let sortedHand = this.sortByValue();
+            // je mets la première carte de la main triée dans la suite que je constitue
+            let currentSuite = new HandOfCards(sortedHand.drawCard());
+            sortedHand.forEach((card, index) => {
+                // Si la carte ne complète pas la suite, je mets la suite actuelle dans le tableau si elle est de bonne taille
+                // et je commence une nouvelle suite avec la carte actuelle
+                if (!card.isSuiteOf(currentSuite.getLastCard())){
+                    if (currentSuite.getNumberOfCards() >= minimalLength) {
+                        arrayOfSuites.push(currentSuite);
+                    }
+                    currentSuite = new HandOfCards()
+                }
+                currentSuite.addCard(card);
+
+                //si c'est la dernière carte, je fais les vérifications et m'occupe de cette dernière suite
+                if (index === sortedHand.getNumberOfCards()-1) {
+                    if (currentSuite.getNumberOfCards() >= minimalLength) {
+                        arrayOfSuites.push(currentSuite);
+                    }
+                }
+            });
+        }
+
+        if (arrayOfSuites.length > 0) {
+            
+        }
+
+        return longestSuite;
+    }
+
+    getHighestSuite(suiteLength) {
+        let highestSuiteWithOne = new HandOfCards();
+        let highestSuiteWithAce = new HandOfCards();
+        if (this.getNumberOfCards() >= suiteLength) {
+            let sortedHandWithOne = this.getSortedByValue();
+
+
+            if (this.hasAce()) {
+                let sortedHandWithAce = sortedHandWithOne.setOnesToAces().getSortedByValue();
+            }
+            
+        }
+
+        return highestSuite;
     }
 }
 // -----------------------------------------------
