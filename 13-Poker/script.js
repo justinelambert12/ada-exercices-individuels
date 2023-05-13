@@ -145,7 +145,7 @@ class HandOfCards {
     }
 
     toString() {
-        return ((this.hand.map(card => card.toString())).join(" "))
+        return (this.hand.map(card => card.toString()).join(" "))
     }
 
     display() {
@@ -170,11 +170,17 @@ class HandOfCards {
     }
 
     setOnesToAces() { // modifie le paquet de cartes
-        this.hand = this.hand.map(card => card.setOneToAce());
+        this.hand = this.hand.map(function(card) {
+            card.setOneToAce();
+            return card;
+        });
     }
 
     setAcesToOnes() { // modifie le paquet de cartes
-        this.hand = this.hand.map(card => card.setAceToOne());
+        this.hand = this.hand.map(function(card) {
+            card.setAceToOne();
+            return card;
+        });
     }
 
     gettHighestCardIndex() {
