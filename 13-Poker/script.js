@@ -90,13 +90,13 @@ class Card {
         console.log(this.toString());
     }
 
-    setOneToAce() {
+    setOneToAce() { // peut modifier la carte
         if (this.value === "1") {
             this.value = "A";
         }
     }
 
-    setAceToOne() {
+    setAceToOne() { // peut modifier la carte
         if (this.value === "A") {
             this.value = "1";
         }
@@ -197,14 +197,16 @@ class HandOfCards {
     }
 
     extractHighestCard() { // modifie le paquet de cartes
-        return this.hand.splice(this.gettHighestCardIndex(), 1);
+        return (this.hand.splice(this.gettHighestCardIndex(), 1))[0];
+        //"splice(...)" renvoie un tableau contenant une Card, je renvoie la Card simplement
     }
 
     // Range le deck en valeurs croissantes
     sortByValue() { // modifie le paquet de cartes
         let sortedHand = [];
+        // je sors les cartes les plus élevées du deck et je les mets au début du nouveau deck une à une
         while (this.getNumberOfCards() > 0) {
-            sortedHand.push(this.extractHighestCard());
+            sortedHand.unshift(this.extractHighestCard());
         }
         this.hand = sortedHand;
     }
@@ -226,10 +228,14 @@ function createDeckCards() {
     return deck;
 }
 
-let exampleDeck = createDeckCards();
-exampleDeck.display();
-exampleDeck.setOnesToAces();
-exampleDeck.display();
+// let exampleDeck = createDeckCards();
+// exampleDeck.display();
+// exampleDeck.sortByValue();
+// exampleDeck.display();
+// exampleDeck.setOnesToAces();
+// exampleDeck.display();
+// exampleDeck.sortByValue();
+// exampleDeck.display();
 
 // // Un tour :
 // let deck = createDeckCards();
