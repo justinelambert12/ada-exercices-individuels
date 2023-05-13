@@ -81,13 +81,13 @@ class Card {
             this.color = color;
         }
     }
-
-    display() {
-        console.log(this.value+this.color);
-    }
-
+    
     toString() {
         return this.value+this.color;
+    }
+
+    display() {
+        console.log(this.toString());
     }
 
     setOneToAce() {
@@ -102,9 +102,13 @@ class Card {
         }
     }
 
+    isAce() {
+        return (this.value === "1" || this.value === "A");
+    }
+
     hasSameValueAs(otherCard) {
-        if (this.value === "1" || this.value === "A") {
-            return (otherCard.value === "1" || otherCard.value === "A")
+        if (this.isAce()) {
+            return otherCard.isAce();
         }
         return (this.value === otherCard.value);
     }
@@ -124,32 +128,111 @@ class Card {
         return (sortedValues.indexOf(this.value) === sortedValues.indexOf(otherCard.value)+1); 
     }
 }
-// let exampleCard = new Card("J", "♠︎");
+let exampleCard = new Card("1", "♠︎");
+let otherExampleCard = new Card("1","♡");
 // console.log(exampleCard);
 // exampleCard.display();
+// console.log("isSuite :", exampleCard.isSuiteOf(otherExampleCard));
+// console.log("hasSameColor :", exampleCard.hasSameColorAs(otherExampleCard));
+// exampleCard.setOneToAce();
+// exampleCard.display();
+// console.log("isAce :", exampleCard.isAce());
 
-// Je reecris une fonction pour créer un deck avec des objets Card
-function createDeckCards() {
-    let deck = [];
-    ["♠︎","♣︎","♡","♢"].forEach(symbol => {
-        for (let i=1; i<=10; i++) {
-            deck.push(new Card(`${i}`, symbol));
+// Je crée une classe pour gérer les ensembles de cartes
+class HandOfCards {
+    constructor(arrayOfCards) {
+        this.hand = arrayOfCards;
+    }
+
+    toString() {
+        return ((this.hand.map(card => card.toString())).join(" "))
+    }
+
+    display() {
+        console.log(this.toString());
+    }
+
+    getNumberOfCards() {
+        return this.hand.length;
+    }
+
+    shuffle() { // modifie le paquet de cartes
+        this.hand = shuffle(this.hand)
+    }
+
+    hasAce() {
+        for (let i=0; i<this.getNumberOfCards(); i++) {
+            if (this.hand[i].isAce()) {
+                return true;
+            }
         }
-        ["J","Q","K"].forEach(head => {
-            deck.push(new Card(head, symbol));
-        })
-    })
-    return shuffle(deck);
+        return false;
+    }
+
+    setOnesToAces() { // modifie le paquet de cartes
+        this.hand = this.hand.map(card => card.setOneToAce());
+    }
+
+    setAcesToOnes() { // modifie le paquet de cartes
+        this.hand = this.hand.map(card => card.setAceToOne());
+    }
+
+    gettHighestCardIndex() {
+        let index = 0;
+        let highestCard = this.hand[0];
+        for (let i=1; i<this.getNumberOfCards(); i++) {
+            let currentCard = this.hand[i];
+            if (currentCard.hasHigherValueAs(highestCard)) {
+                index = i;
+                highestCard = currentCard;
+            }
+        }
+        return index;
+    }
+
+    extractHighestCard() { // modifie le paquet de cartes
+        return this.hand.splice(this.gettHighestCardIndex(), 1);
+    }
+
+    // Range le deck en valeurs croissantes
+    sortByValue() { // modifie le paquet de cartes
+        let sortedHand = [];
+        while (this.getNumberOfCards() > 0) {
+            sortedHand.push(this.extractHighestCard());
+        }
+        this.hand = sortedHand;
+    }
 }
 
-// Un tour :
-let deck = createDeckCards();
-// console.log(deck);
-const player1 = deal(2);
-const player2 = deal(2);
-// console.log("players hand", player1, player2);
-let flopCards = flop();
-// console.log("cards on the board", flopCards);
+// Je reecris une fonction pour créer un objet HandOfCards "deck" avec des objets Card
+function createDeckCards() {
+    let array = [];
+    ["♠︎","♣︎","♡","♢"].forEach(symbol => {
+        for (let i=1; i<=10; i++) {
+            array.push(new Card(`${i}`, symbol));
+        }
+        ["J","Q","K"].forEach(head => {
+            array.push(new Card(head, symbol));
+        })
+    })
+    let deck = new HandOfCards(array);
+    deck.shuffle();
+    return deck;
+}
+
+let exampleDeck = createDeckCards();
+exampleDeck.display();
+exampleDeck.setOnesToAces();
+exampleDeck.display();
+
+// // Un tour :
+// let deck = createDeckCards();
+// // console.log(deck);
+// const player1 = deal(2);
+// const player2 = deal(2);
+// // console.log("players hand", player1, player2);
+// let flopCards = flop();
+// // console.log("cards on the board", flopCards);
 
 // ETAPE 5 : 
 // Fonction qui retourne une string decrivant la main d'un joueur ou le board ou le deck
@@ -246,4 +329,4 @@ function showdown(playerHand, flop) {
     let allCards = playerHand.concat(flop);
     isSuite(allCards);
 }
-showdown(player1, flopCards);
+// showdown(player1, flopCards);
