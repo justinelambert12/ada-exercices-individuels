@@ -360,12 +360,16 @@ class HandOfCards {
         return this.getSuite(suiteLength);
     }
 
-    // Retourne un tableau contenant les ensembles de cartes par valeur (dans l'ordre et par force croissante : paires, brelans, carrés)
+    // Retourne un objet contenant les ensembles de cartes (clés: pairs, trios, fours / valeurs: tableaux d'ensembles de valeurs décroissantes)
     getCardsSetsWithSameValue() {
-        let cardsSets = [];
+        let cardsSets = {
+            "pairs": [], 
+            "trios": [], 
+            "fours": []
+        };
         if (this.getNumberOfCards() > 0) {
             let sortedHand = this.getSortedByValue();
-            // Je vais parcourir le deck rangé et séparer les cartes en paires, brelans et carrés.
+            // Je vais parcourir le deck rangé et séparer les cartes en paires, trois cartes et carrés.
             let currentSet = new HandOfCards();
             currentSet.addCard(sortedHand.drawCard());
 
@@ -373,9 +377,16 @@ class HandOfCards {
                 if (card.hasSameValueAs(currentSet.getLastCard())) {
                     currentSet.addCard(card);
                 } else { // la carte n'a pas la même valeur que celles du set actuel
-                    // Je mets le set dans le tableau que s'il y a une paire ou plus dedans
-                    if (currentSet.getNumberOfCards() > 1) { 
-                        cardsSets.push(currentSet);
+                    // Je mets le set dans l'objet en fonction de son nombre de cartes
+                    let numberOfCards = currentSet.getNumberOfCards();
+                    if (numberOfCards === 2) {
+                        cardsSets["pairs"].push(currentSet);
+                    } else if (numberOfCards === 3) {
+                        cardsSets["trios"].push(currentSet);
+                    } else if (numberOfCards === 4) {
+                        cardsSets["fours"].push(currentSet);
+                    } else {
+                        console.log(`Attention dans getCardsSetsWithSameValue() ${currentSet.display()} n'est pas géré.`)
                     }
                     // Je réinitialise le set et y ajoute la carte
                     currentSet = new HandOfCards()
@@ -383,8 +394,15 @@ class HandOfCards {
                 }
             })
             //Je vérifie le dernier set constitué et le mets dans le tableau ou pas
-            if (currentSet.getNumberOfCards() > 1) {
-                cardsSets.push(currentSet);
+            let numberOfCards = currentSet.getNumberOfCards();
+            if (numberOfCards === 2) {
+                cardsSets["pairs"].push(currentSet);
+            } else if (numberOfCards === 3) {
+                cardsSets["trios"].push(currentSet);
+            } else if (numberOfCards === 4) {
+                cardsSets["fours"].push(currentSet);
+            } else {
+                console.log(`Attention dans getCardsSetsWithSameValue() ${currentSet.display()} n'est pas géré.`)
             }
         }
 
@@ -410,7 +428,8 @@ class HandOfCards {
 // console.log("getHighestSuite", exDeckCards.getSuite(3));
 // console.log("getHighestSuite", exDeckCards.getHighestSuite(4));
 // console.log("hasOneColor", exDeckCards.hasOneColor())
-// console.log("getSetsOfCards", exDeckCards.getCardsSetsWithSameValue()[0])
+// console.log("getSetsOfCards") 
+// let objCardsSets = exDeckCards.getCardsSetsWithSameValue();
 // exArrCards.shift();
 // exDeckCards.display();
 // exDeckCards.shuffle();
