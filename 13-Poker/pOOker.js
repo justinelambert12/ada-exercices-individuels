@@ -244,6 +244,20 @@ class HandOfCards {
         return false;
     }
 
+    hasOneColor() {
+        // Si une seule carte ou pas de carte dans la main il n'y a qu'une seule couleur
+        if (this.getNumberOfCards() < 2) {
+            return true;
+        }
+        // Je compare les couleurs de toutes les cartes à celle de la première
+        for (let i=0; i<this.getNumberOfCards(); i++) {
+            if (!(this.getCardAtIndex(i).hasSameColorAs(this.getCardAtIndex(0)))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     getLastCard() {
         return this.getCardAtIndex(this.getNumberOfCards()-1);
     }
@@ -358,12 +372,13 @@ class HandOfCards {
 // exampleDeck.display();
 // exampleDeck.sortByValue();
 // exampleDeck.display();
-// let exArrCards = [new Card("1", "s"), new Card("K", "h"), new Card("Q", "c"), new Card("J", "d")];
+// let exArrCards = [new Card("1", "s"), new Card("K", "s"), new Card("Q", "s"), new Card("J", "s")];
 // let exDeckCards = new HandOfCards(exArrCards);
 // exDeckCards.display();
 // console.log("exDeckCards", exDeckCards);
 // console.log("getHighestSuite", exDeckCards.getSuite(3));
 // console.log("getHighestSuite", exDeckCards.getHighestSuite(4));
+// console.log("hasOneColor", exDeckCards.hasOneColor())
 // exArrCards.shift();
 // exDeckCards.display();
 // exDeckCards.shuffle();
