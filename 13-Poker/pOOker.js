@@ -83,7 +83,7 @@ class Card {
 // Je crée une classe pour gérer les ensembles de cartes
 class HandOfCards {
     constructor(arrayOfCards) {
-        if (!arrayOfCards) {
+        if (arrayOfCards === undefined) {
             this.hand = [];
         } else if (!Array.isArray(arrayOfCards)) {
             console.log(`"${arrayOfCards}" n'est pas un tableau`)
@@ -110,7 +110,7 @@ class HandOfCards {
 
     addCard(card, index) { // modifie le paquet de cartes
         // si l'index n'est pas renseigné ou invalide, on met la carte à la fin du paquet
-        if (!index || !(index < this.getNumberOfCards() && index >= 0)) {
+        if (index === undefined || !(index < this.getNumberOfCards() && index >= 0)) {
             this.hand.push(card);
         } else { // si l'index est valide, on insère la carte au bon endroit
             this.hand.splice(index, 0, card)
@@ -245,7 +245,7 @@ class HandOfCards {
     }
 
     getLastCard() {
-        return this.getCardAtIndex(this.getNumberOfCards-1);
+        return this.getCardAtIndex(this.getNumberOfCards()-1);
     }
 
     getHighestCardIndex() {
@@ -293,9 +293,10 @@ class HandOfCards {
         let strongestSuite = new HandOfCards();
         if (this.getNumberOfCards() >= suiteLength) {
             let sortedHand = this.getSortedByValue();
+            let currentSuite = new HandOfCards();
             // je mets la première carte de la main triée dans la suite que je constitue
-            let currentSuite = new HandOfCards(sortedHand.drawCard());
-            sortedHand.forEach((card, index) => {
+            currentSuite.addCard(sortedHand.drawCard());
+            sortedHand.getHand().forEach((card, index) => {
                 // Si la carte ne complète pas la suite, je mets la suite actuelle dans le tableau si elle est de bonne taille
                 // et je commence une nouvelle suite avec la carte actuelle
                 if (!card.isSuiteOf(currentSuite.getLastCard())){
@@ -319,14 +320,10 @@ class HandOfCards {
             });
         }
 
-        // Je parcours la liste des suites valides (longueur = longueur imposée) s'il y en a
+        // S'il y a des suites valides (longueur = longueur imposée) c'est la dernière ajoutée qui a la carte
+        // de valeur la plus élevée. Je la fusionne à "strongestSuite" qui était vide.
         if (arrayOfSuites.length > 0) {
-            arrayOfSuites.forEach(currentSuite => {
-                // je sélectionne la suite avec la carte de plus haute valeur
-                if (currentSuite.getHighestCard().hasHigherValueAs(strongestSuite.getHighestCard())) {
-                    strongestSuite = currentSuite;
-                }
-            })
+            strongestSuite.addHand(arrayOfSuites[arrayOfSuites.length - 1]);
         }
 
         return strongestSuite;
@@ -336,12 +333,8 @@ class HandOfCards {
     getHighestSuite(suiteLength) {
         // S'il y a un as je retourne la suite de taille imposée qui le place après le roi (suite la plus forte)
         // seulement si elle existe.
-        // console.log("this.getHand()", this.getHand());
-        // console.log("this.hand", this.hand);
         if (this.hasAce()) {
-            console.log("avant creation du deckWithAces OK");
             let deckWithAces = new HandOfCards(this.getHand());
-            console.log("deckwithAces before setOnesToAces", deckWithAces)
             deckWithAces.setOnesToAces();
             let highestSuiteWithAce = deckWithAces.getSuite(suiteLength);
             
@@ -365,12 +358,12 @@ class HandOfCards {
 // exampleDeck.display();
 // exampleDeck.sortByValue();
 // exampleDeck.display();
-let exArrCards = [new Card("1", "s"), new Card("K", "h"), new Card("Q", "c"), new Card("J", "d")];
-let exDeckCards = new HandOfCards(exArrCards);
+// let exArrCards = [new Card("1", "s"), new Card("K", "h"), new Card("Q", "c"), new Card("J", "d")];
+// let exDeckCards = new HandOfCards(exArrCards);
 // exDeckCards.display();
 // console.log("exDeckCards", exDeckCards);
-console.log("getHighestSuite", exDeckCards.getSuite(3));
-console.log("getHighestSuite", exDeckCards.getHighestSuite(4));
+// console.log("getHighestSuite", exDeckCards.getSuite(3));
+// console.log("getHighestSuite", exDeckCards.getHighestSuite(4));
 // exArrCards.shift();
 // exDeckCards.display();
 // exDeckCards.shuffle();
