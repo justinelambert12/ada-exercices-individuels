@@ -173,7 +173,7 @@ class HandOfCards {
     }
 
     // Renvoie un nouveau deck où sont extraites du deck les cartes communes avec le deck en paramètre
-    extractHand(otherHand) {
+    getDeckWithoutExtractedHand(otherHand) {
         let handOfCards = new HandOfCards();
         this.getHand().forEach((cardA) => {
             let isInOtherHand = false;
@@ -447,7 +447,7 @@ class HandOfCards {
 // exDeckCards.display();
 // let exArrCards2 = [new Card("J", "s"), new Card("5", "h"), new Card("Q", "s"), new Card("K", "d"), new Card("10", "h")];
 // let exDeckCards2 = new HandOfCards(exArrCards2);
-// console.log("extract Hand", exDeckCards.extractHand(exDeckCards2));
+// console.log("extract Hand", exDeckCards.getDeckWithoutExtractedHand(exDeckCards2));
 
 // TESTS DE L'ETAPE 4
 // // Un tour :
