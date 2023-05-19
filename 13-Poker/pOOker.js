@@ -162,7 +162,7 @@ class HandOfCards {
         }
     }
 
-    // Tire la première carte du paquet
+    // Tire et retourne la première carte du paquet
     drawCard() { // modifie le paquet de cartes
         return this.extractCardAtIndex(0);
     }
@@ -423,6 +423,36 @@ class HandOfCards {
 
         return cardsSets;
     }
+
+    // Retourne les 5 cartes de la même couleur avec les valeurs les plus élevées ou une HandOfCards vide
+    // Je ne gère que le cas où il faut 5 cartes / 7, du coup il n'y a qu'une seule combinaison possible si elle existe
+    getSameColor() {
+        const numberOfCards = 5;
+        let deckSameColor = new HandOfCards();
+        let sortedHand = this.getSortedByValue()
+        sortedHand.setOnesToAces();
+        // je vais vider "sortedHand" en retirant les cartes d'une même couleur, qui change à chaque passage dans la boucle while
+        while (sortedHand.getNumberOfCards() > 0) {
+            let firstCard = sortedHand.drawCard();
+            deckSameColor.addCard(firstCard);
+            sortedHand.getHand().forEach((card) => {
+                if (card.hasSameColorAs(firstCard) && deckSameColor.getNumberOfCards() < numberOfCards) {
+                    deckSameColor.addCard(card);
+                }
+            })
+            // Si le deck constitué d'une seule couleur a 5 cartes on peut sortir de la boucle while
+            if (deckSameColor.getNumberOfCards() === numberOfCards) {
+                break;
+            // sinon on vide deckSameColor et sortedHand de ces cartes et on recommence avec une autre couleur
+            } else { 
+                sortedHand = sortedHand.getDeckWithoutExtractedHand(deckSameColor);
+                deckSameColor = new HandOfCards();
+            }
+        }
+
+        return deckSameColor;
+    }
+
 }
 // -----------------------------------------------
 // TESTS POUR LES METHODES DES OBJETS HandOfCards
@@ -432,14 +462,14 @@ class HandOfCards {
 // exampleDeck.display();
 // exampleDeck.setOnesToAces();
 // exampleDeck.display();
-// let exArrCards = [new Card("J", "s"), new Card("9", "h"), new Card("Q", "s"), new Card("K", "d"), new Card("10", "h")];
+// let exArrCards = [new Card("1", "h"), new Card("J", "s"), new Card("9", "s"), new Card("Q", "s"), new Card("K", "s"), new Card("10", "s")];
 // let exDeckCards = new HandOfCards(exArrCards);
 // exDeckCards.display();
 // console.log("exDeckCards", exDeckCards);
 // console.log("getSuite", exDeckCards.getSuite(3));
 // console.log("getHighestSuite", exDeckCards.getHighestSuite(4));
 // console.log("hasOneColor", exDeckCards.hasOneColor())
-// console.log("getSetsOfCards") 
+// console.log("getSameColor", exDeckCards.getSameColor());
 // let objCardsSets = exDeckCards.getCardsSetsWithSameValue();
 // exArrCards.shift();
 // exDeckCards.display();
@@ -466,6 +496,7 @@ class HandOfCards {
 function showdown(playerHand, flop) {
     console.log(`flop: ${flop.toString()} / player: ${playerHand.toString()}`);
     let allCards = playerHand.concat(flop);
+    let combination = new HandOfCards();
     // Je vérifie s'il y a des combinaisons en commençant par les plus fortes
     let highestSuite = allCards.getHighestSuite();
 
@@ -473,23 +504,81 @@ function showdown(playerHand, flop) {
     // ou quinte flush (autre suite de même couleur)
     if (highestSuite.getNumberOfCards() > 0 && highestSuite.hasOneColor()) {// il y a une suite et elle est d'une seule couleur
         if (highestSuite.getHighestCard().isAce()) {// la carte la plus forte est un as
-            console.log("Player has a royal flush !:", highestSuite.display());
+            console.log("Player has a royal flush !:");
         } else {
-            console.log("Player has a straight flush:", highestSuite.display());
+            console.log("Player has a straight flush:");
         }
-        return highestSuite;
-    }
-    
-    let cardsWithSameValue = allCards.getCardsSetsWithSameValue()
-    // Carré (4 cartes de même valeur)
-    if (cardsWithSameValue[fours].length > 0) { // il y a au moins un carré
-        console.log("Player has a four of a kind:", cardsWithSameValue[fours].display());
-
+        combination = highestSuite;
     } 
+    else {
+        let cardsWithSameValue = allCards.getCardsSetsWithSameValue()
+        // Carré (4 cartes de même valeur)
+        if (cardsWithSameValue[fours].length > 0) { // il y a au moins un carré
+            let fourOfKind = cardsWithSameValue[fours][0];
+            combination.addHand(fourOfKind);
+            combination.addCard(allCards.getDeckWithoutExtractedHand(fourOfKind).getHighestCard())
+            console.log("Player has a four of a kind:");
+        } else {
+            let threeOfKind = new HandOfCards();
+            let firstPair = new HandOfCards();
+            let secondPair = new HandOfCards();
+            if (cardsWithSameValue[trios].length > 0) {
+                threeOfKind = cardsWithSameValue[trios][0];
+            }
+            if (cardsWithSameValue[pairs].length > 0) {
+                firstPair = cardsWithSameValue[pairs][0];
+                if (cardsWithSameValue[pairs].length > 1) {
+                    secondPair = cardsWithSameValue[pairs][1];
+                }
+            }
+            // Full (3 cartes de même valeur + une paire)
+            if (threeOfKind.getNumberOfCards() > 0 && firstPair.getNumberOfCards() > 0){
+                combination.addHand(threeOfKind);
+                combination.addHand(firstPair);
+                console.log("Player has a full house:");
+            } else {
+                // Couleur (5 cartes de la même couleur)
+                let flush = new HandOfCards(); // A IMPLEMENTER POUR TROUVER LA COULEUR
+                if (flush.getNumberOfCards() > 0) {
+                    combination = flush;
+                    console.log("Player has a flush:"); 
+                // Suite (5 cartes à la suite pas de la même couleur)
+                } else if (highestSuite.getNumberOfCards() > 0) {
+                    combination = highestSuite;
+                    console.log("Player has a straight:");
+                    // Brelan (3 cartes de même valeur + 2 autres cartes les plus hautes ne formant pas une paire)
+                } else if (threeOfKind.getNumberOfCards() > 0) {
+                    combination.addHand(threeOfKind);
+                    let allCardsWithoutThreeOfKind = allCards.getDeckWithoutExtractedHand(threeOfKind);
+                    combination.addCard(allCardsWithoutThreeOfKind.extractHighestCard());
+                    combination.addCard(allCardsWithoutThreeOfKind.extractHighestCard());
+                // Paires (+ carte(s) la(les) plus haute(s))
+                } else if (firstPair.getNumberOfCards() > 0) {
+                    combination.addHand(firstPair);
+                    let allCardsWithoutPairs = allCards.getDeckWithoutExtractedHand(firstPair);
+                    // S'il y a 2 paires, on ne rajoutera qu'une carte
+                    if (secondPair.getNumberOfCards() > 0) {
+                        combination.addHand(secondPair);
+                        allCardsWithoutPairs = allCardsWithoutPairs.getDeckWithoutExtractedHand(secondPair);
+                        console.log("Player has two pairs:");
+                    } else { // s'il n'y a qu'une paire, on ajoute 3 cartes
+                        combination.addCard(allCardsWithoutPairs.extractHighestCard());
+                        combination.addCard(allCardsWithoutPairs.extractHighestCard());
+                        console.log("Player has one pair:");
+                    }
+                    combination.addCard(allCardsWithoutPairs.extractHighestCard());
+                // Pas de combinaison, je retourne les 5 cartes les plus élevées
+                } else {
+                    for (let i=0; i<5; i++) {
+                        combination.addCard(allCards.extractHighestCard());
+                    }
+                }
+            }  
+        }
+    }    
     
-    // Full (3 cartes de même valeur + une paire)
-
-    
+    combination.display();
+    return combination;    
 }
 // -----------------------------------------------
 // TESTS DE L'ETAPE 5
