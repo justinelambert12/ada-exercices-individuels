@@ -315,6 +315,11 @@ class HandOfCards {
         return new HandOfCards(handSortedByValue);
     }
 
+    // Retourne un nouveau deck avec les cartes rangées dans l'ordre inverse
+    getReverse() {
+        return new HandOfCards(this.getHand().reverse())
+    }
+
     // Retourne la suite (HandOfCards) de longueur imposée avec la plus haute valeur de carte (si elle existe, sinon HandOfCards vide)
     getSuite(suiteLength) {
         let arrayOfSuites = [];
@@ -383,7 +388,10 @@ class HandOfCards {
             "fours": []
         };
         if (this.getNumberOfCards() > 0) {
-            let sortedHand = this.getSortedByValue();
+            // Je fais une copie du deck, je remplace tous les 1 par des As (plus forts) et je range par ordre décroissant de valeurs
+            let sortedHand = new HandOfCards(this.getHand());
+            sortedHand.setOnesToAces();
+            sortedHand = sortedHand.getSortedByValue().getReverse();
             // Je vais parcourir le deck rangé et séparer les cartes en paires, trois cartes et carrés.
             let currentSet = new HandOfCards();
             currentSet.addCard(sortedHand.drawCard());
@@ -392,7 +400,7 @@ class HandOfCards {
                 if (card.hasSameValueAs(currentSet.getLastCard())) {
                     currentSet.addCard(card);
                 } else { // la carte n'a pas la même valeur que celles du set actuel
-                    // Je mets le set dans l'objet en fonction de son nombre de cartes
+                    // Je mets le set dans l'objet cardsSet en fonction de son nombre de cartes
                     let numberOfCards = currentSet.getNumberOfCards();
                     if (numberOfCards === 2) {
                         cardsSets["pairs"].push(currentSet);
@@ -400,8 +408,8 @@ class HandOfCards {
                         cardsSets["trios"].push(currentSet);
                     } else if (numberOfCards === 4) {
                         cardsSets["fours"].push(currentSet);
-                    } else {
-                        console.log(`Attention dans getCardsSetsWithSameValue() ${currentSet.display()} n'est pas géré.`)
+                    } else if (numberOfCards != 1) {
+                        console.log(`Attention dans getCardsSetsWithSameValue() ${currentSet.toString()} n'est pas géré.`)
                     }
                     // Je réinitialise le set et y ajoute la carte
                     currentSet = new HandOfCards()
@@ -416,8 +424,8 @@ class HandOfCards {
                 cardsSets["trios"].push(currentSet);
             } else if (numberOfCards === 4) {
                 cardsSets["fours"].push(currentSet);
-            } else {
-                console.log(`Attention dans getCardsSetsWithSameValue() ${currentSet.display()} n'est pas géré.`)
+            } else if (numberOfCards != 1) {
+                console.log(`Attention dans getCardsSetsWithSameValue() ${currentSet.toString()} n'est pas géré.`)
             }
         }
 
@@ -429,9 +437,11 @@ class HandOfCards {
     getSameColor() {
         const numberOfCards = 5;
         let deckSameColor = new HandOfCards();
-        let sortedHand = this.getSortedByValue()
+        // Je fais une copie du deck, je remplace tous les 1 par des As (plus forts) et je range par ordre décroissant de valeurs
+        let sortedHand = new HandOfCards(this.getHand());
         sortedHand.setOnesToAces();
-        // je vais vider "sortedHand" en retirant les cartes d'une même couleur, qui change à chaque passage dans la boucle while
+        sortedHand = sortedHand.getSortedByValue().getReverse();
+        // Je vais vider "sortedHand" en retirant les cartes d'une même couleur, qui change à chaque passage dans la boucle while
         while (sortedHand.getNumberOfCards() > 0) {
             let firstCard = sortedHand.drawCard();
             deckSameColor.addCard(firstCard);
@@ -495,8 +505,9 @@ class HandOfCards {
 // Fonction pour annoncer la main du joueur (paire, brelan, carre, couleur, suite, quinte) 
 function showdown(playerHand, flop) {
     console.log(`flop: ${flop.toString()} / player: ${playerHand.toString()}`);
-    let allCards = playerHand.concat(flop);
+    let allCards = playerHand.concatHands(flop);
     let combination = new HandOfCards();
+    let rank = 0;
     // Je vérifie s'il y a des combinaisons en commençant par les plus fortes
     let highestSuite = allCards.getHighestSuite();
 
@@ -504,8 +515,10 @@ function showdown(playerHand, flop) {
     // ou quinte flush (autre suite de même couleur)
     if (highestSuite.getNumberOfCards() > 0 && highestSuite.hasOneColor()) {// il y a une suite et elle est d'une seule couleur
         if (highestSuite.getHighestCard().isAce()) {// la carte la plus forte est un as
+            rank = 1;
             console.log("Player has a royal flush !:");
         } else {
+            rank = 2;
             console.log("Player has a straight flush:");
         }
         combination = highestSuite;
@@ -513,38 +526,42 @@ function showdown(playerHand, flop) {
     else {
         let cardsWithSameValue = allCards.getCardsSetsWithSameValue()
         // Carré (4 cartes de même valeur)
-        if (cardsWithSameValue[fours].length > 0) { // il y a au moins un carré
-            let fourOfKind = cardsWithSameValue[fours][0];
+        if (cardsWithSameValue["fours"].length > 0) { // il y a au moins un carré
+            let fourOfKind = cardsWithSameValue["fours"][0];
             combination.addHand(fourOfKind);
             combination.addCard(allCards.getDeckWithoutExtractedHand(fourOfKind).getHighestCard())
+            rank = 3;
             console.log("Player has a four of a kind:");
         } else {
             let threeOfKind = new HandOfCards();
             let firstPair = new HandOfCards();
             let secondPair = new HandOfCards();
-            if (cardsWithSameValue[trios].length > 0) {
-                threeOfKind = cardsWithSameValue[trios][0];
+            if (cardsWithSameValue["trios"].length > 0) {
+                threeOfKind = cardsWithSameValue["trios"][0];
             }
-            if (cardsWithSameValue[pairs].length > 0) {
-                firstPair = cardsWithSameValue[pairs][0];
-                if (cardsWithSameValue[pairs].length > 1) {
-                    secondPair = cardsWithSameValue[pairs][1];
+            if (cardsWithSameValue["pairs"].length > 0) {
+                firstPair = cardsWithSameValue["pairs"][0];
+                if (cardsWithSameValue["pairs"].length > 1) {
+                    secondPair = cardsWithSameValue["pairs"][1];
                 }
             }
             // Full (3 cartes de même valeur + une paire)
             if (threeOfKind.getNumberOfCards() > 0 && firstPair.getNumberOfCards() > 0){
                 combination.addHand(threeOfKind);
                 combination.addHand(firstPair);
+                rank = 4;
                 console.log("Player has a full house:");
             } else {
                 // Couleur (5 cartes de la même couleur)
-                let flush = new HandOfCards(); // A IMPLEMENTER POUR TROUVER LA COULEUR
+                let flush = allCards.getSameColor();
                 if (flush.getNumberOfCards() > 0) {
                     combination = flush;
+                    rank = 5;
                     console.log("Player has a flush:"); 
                 // Suite (5 cartes à la suite pas de la même couleur)
                 } else if (highestSuite.getNumberOfCards() > 0) {
                     combination = highestSuite;
+                    rank = 6;
                     console.log("Player has a straight:");
                     // Brelan (3 cartes de même valeur + 2 autres cartes les plus hautes ne formant pas une paire)
                 } else if (threeOfKind.getNumberOfCards() > 0) {
@@ -552,7 +569,9 @@ function showdown(playerHand, flop) {
                     let allCardsWithoutThreeOfKind = allCards.getDeckWithoutExtractedHand(threeOfKind);
                     combination.addCard(allCardsWithoutThreeOfKind.extractHighestCard());
                     combination.addCard(allCardsWithoutThreeOfKind.extractHighestCard());
-                // Paires (+ carte(s) la(les) plus haute(s))
+                    rank = 7;
+                    console.log("Player has a three of kind:");
+                    // Paires (+ carte(s) la(les) plus haute(s))
                 } else if (firstPair.getNumberOfCards() > 0) {
                     combination.addHand(firstPair);
                     let allCardsWithoutPairs = allCards.getDeckWithoutExtractedHand(firstPair);
@@ -560,34 +579,44 @@ function showdown(playerHand, flop) {
                     if (secondPair.getNumberOfCards() > 0) {
                         combination.addHand(secondPair);
                         allCardsWithoutPairs = allCardsWithoutPairs.getDeckWithoutExtractedHand(secondPair);
+                        rank = 8;
                         console.log("Player has two pairs:");
                     } else { // s'il n'y a qu'une paire, on ajoute 3 cartes
                         combination.addCard(allCardsWithoutPairs.extractHighestCard());
                         combination.addCard(allCardsWithoutPairs.extractHighestCard());
+                        rank = 9;
                         console.log("Player has one pair:");
                     }
                     combination.addCard(allCardsWithoutPairs.extractHighestCard());
-                // Pas de combinaison, je retourne les 5 cartes les plus élevées
+                    // Pas de combinaison, je retourne les 5 cartes les plus élevées
                 } else {
                     for (let i=0; i<5; i++) {
                         combination.addCard(allCards.extractHighestCard());
                     }
+                    rank = 10;
+                    console.log("Player has high card:");
                 }
             }  
         }
     }    
     
     combination.display();
-    return combination;    
+    console.log("It is a poker hand of rank:", rank, "(/10)");
+    return {"combination": combination, "rank": rank};    
 }
 // -----------------------------------------------
 // TESTS DE L'ETAPE 5
-// // Un tour :
-// const deck = HandOfCards.prototype.createDeck();
-// const player1 = deck.deal(2);
-// const player2 = deck.deal(2);
-// console.log("players hand: ", `P1: ${player1.toString()}`, `\\ P2: ${player2.toString()}`);
-// const flopCards = deck.flop();
-// console.log("cards on the board: ", `${flopCards.toString()}`);
-// showdown(player1, flopCards);
+// Un tour :
+const deck = HandOfCards.prototype.createDeck();
+const player1 = deck.deal(2);
+const player2 = deck.deal(2);
+const flopCards = deck.flop();
+console.log("cards on the board: ", `${flopCards.toString()}`);
+console.log("players hand: ", `P1: ${player1.toString()}`, `\\ P2: ${player2.toString()}`);
+console.log("================")
+console.log("PLAYER 1 REVEAL")
+showdown(player1, flopCards);
+console.log("================")
+console.log("PLAYER 2 REVEAL")
+showdown(player2, flopCards);
 // -----------------------------------------------
