@@ -172,6 +172,24 @@ class HandOfCards {
         return new HandOfCards(this.getHand().concat(otherHand.getHand()));
     }
 
+    // Renvoie un nouveau deck où sont extraites du deck les cartes communes avec le deck en paramètre
+    extractHand(otherHand) {
+        let handOfCards = new HandOfCards();
+        this.getHand().forEach((cardA) => {
+            let isInOtherHand = false;
+            otherHand.getHand().forEach(cardB => {
+                if (cardA.hasSameValueAs(cardB) && cardA.hasSameColorAs(cardB)) {
+                    isInOtherHand = true;
+                }
+            })
+            if (!isInOtherHand) {
+                handOfCards.addCard(cardA);
+            }
+        })
+
+        return handOfCards;
+    }
+
     // METHODES POUR DISTRIBUER
     shuffle() { // modifie le paquet de cartes
         let shuffledHand = new HandOfCards();
@@ -297,7 +315,7 @@ class HandOfCards {
         return new HandOfCards(handSortedByValue);
     }
 
-    // Retourne la suite de longueur imposée avec la plus haute valeur de carte (si elle existe, sinon HandOfCards vide)
+    // Retourne la suite (HandOfCards) de longueur imposée avec la plus haute valeur de carte (si elle existe, sinon HandOfCards vide)
     getSuite(suiteLength) {
         let arrayOfSuites = [];
         let strongestSuite = new HandOfCards();
@@ -339,7 +357,7 @@ class HandOfCards {
         return strongestSuite;
     }
 
-    // Retourne la suite de taille imposée avec la plus haute valeur de carte en prenant en compte les deux valeurs de l'as
+    // Retourne la suite (HandOfCards) de taille imposée avec la plus haute valeur de carte en prenant en compte les deux valeurs de l'as
     getHighestSuite(suiteLength) {
         // S'il y a un as je retourne la suite de taille imposée qui le place après le roi (suite la plus forte)
         // seulement si elle existe.
@@ -356,7 +374,8 @@ class HandOfCards {
         return this.getSuite(suiteLength);
     }
 
-    // Retourne un objet contenant les ensembles de cartes (clés: pairs, trios, fours / valeurs: tableaux d'ensembles de valeurs décroissantes)
+    // Retourne un objet contenant les ensembles de cartes (clés: pairs, trios, fours / 
+    // valeurs: tableaux d'ensembles de valeurs décroissantes)
     getCardsSetsWithSameValue() {
         let cardsSets = {
             "pairs": [], 
@@ -426,6 +445,9 @@ class HandOfCards {
 // exDeckCards.display();
 // exDeckCards.shuffle();
 // exDeckCards.display();
+// let exArrCards2 = [new Card("J", "s"), new Card("5", "h"), new Card("Q", "s"), new Card("K", "d"), new Card("10", "h")];
+// let exDeckCards2 = new HandOfCards(exArrCards2);
+// console.log("extract Hand", exDeckCards.extractHand(exDeckCards2));
 
 // TESTS DE L'ETAPE 4
 // // Un tour :
@@ -444,6 +466,29 @@ class HandOfCards {
 function showdown(playerHand, flop) {
     console.log(`flop: ${flop.toString()} / player: ${playerHand.toString()}`);
     let allCards = playerHand.concat(flop);
+    // Je vérifie s'il y a des combinaisons en commençant par les plus fortes
+    let highestSuite = allCards.getHighestSuite();
+
+    // Quinte Flush royale (suite de même couleur avec l'As comme carte la plus forte)
+    // ou quinte flush (autre suite de même couleur)
+    if (highestSuite.getNumberOfCards() > 0 && highestSuite.hasOneColor()) {// il y a une suite et elle est d'une seule couleur
+        if (highestSuite.getHighestCard().isAce()) {// la carte la plus forte est un as
+            console.log("Player has a royal flush !:", highestSuite.display());
+        } else {
+            console.log("Player has a straight flush:", highestSuite.display());
+        }
+        return highestSuite;
+    }
+    
+    let cardsWithSameValue = allCards.getCardsSetsWithSameValue()
+    // Carré (4 cartes de même valeur)
+    if (cardsWithSameValue[fours].length > 0) { // il y a au moins un carré
+        console.log("Player has a four of a kind:", cardsWithSameValue[fours].display());
+
+    } 
+    
+    // Full (3 cartes de même valeur + une paire)
+
     
 }
 // -----------------------------------------------
