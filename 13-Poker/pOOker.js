@@ -283,22 +283,18 @@ class HandOfCards {
         return this.extractCardAtIndex(this.getHighestCardIndex());
     }
 
-    // Range le deck en valeurs croissantes
-    sortByValue() { // modifie le paquet de cartes
-        let sortedHand = new HandOfCards();
-        // je sors les cartes les plus élevées du deck et je les mets au début du nouveau deck une à une
-        while (this.getNumberOfCards() > 0) {
-            sortedHand.addCard(this.extractHighestCard(), 0);
-        }
-        // je fusionne mon deck vide avec le deck trié
-        this.addHand(sortedHand);
-    }
-
     // Retourne un nouveau deck rangé en valeurs croissantes à partir du deck actuel
     getSortedByValue() {
-        let newHand = new HandOfCards(this.getHand());
-        newHand.sortByValue();
-        return newHand;
+        let handSortedByValue = this.getHand().sort(function (cardA, cardB) {
+            if (cardB.hasHigherValueAs(cardA)) {
+                return -1;
+            } else if (cardA.hasHigherValueAs(cardB)) {
+                return 1;
+            } else {
+                return 0;
+            }
+        });
+        return new HandOfCards(handSortedByValue);
     }
 
     // Retourne la suite de longueur imposée avec la plus haute valeur de carte (si elle existe, sinon HandOfCards vide)
@@ -415,17 +411,13 @@ class HandOfCards {
 // console.log(emptyDeck);
 // let exampleDeck = HandOfCards.prototype.createDeck();
 // exampleDeck.display();
-// exampleDeck.sortByValue();
-// exampleDeck.display();
 // exampleDeck.setOnesToAces();
 // exampleDeck.display();
-// exampleDeck.sortByValue();
-// exampleDeck.display();
-// let exArrCards = [new Card("J", "s"), new Card("J", "h"), new Card("Q", "s"), new Card("J", "d"), new Card("Q", "h")];
+// let exArrCards = [new Card("J", "s"), new Card("9", "h"), new Card("Q", "s"), new Card("K", "d"), new Card("10", "h")];
 // let exDeckCards = new HandOfCards(exArrCards);
 // exDeckCards.display();
 // console.log("exDeckCards", exDeckCards);
-// console.log("getHighestSuite", exDeckCards.getSuite(3));
+// console.log("getSuite", exDeckCards.getSuite(3));
 // console.log("getHighestSuite", exDeckCards.getHighestSuite(4));
 // console.log("hasOneColor", exDeckCards.hasOneColor())
 // console.log("getSetsOfCards") 
