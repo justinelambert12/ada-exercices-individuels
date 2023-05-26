@@ -55,6 +55,7 @@ function getNumberMaxDecimals(arrayOfStringifiedNumbers) {
     return maxNumberDecimals;    
 }
 
+// GERE MAL LES NOMBRES NEGATIFS -> A CORRIGER
 // Fonction pour calculer le résultat d'une ligne d'opération (sous forme d'une string) qui ne contient pas de parenthèses
 function handleSimpleCalculation(str) {
     // Si la str ne contient pas d'opérateurs, c'est juste un nombre qu'on convertit en float
@@ -77,17 +78,6 @@ function handleSimpleCalculation(str) {
     }
     
 }
-// console.log(handleSimpleCalculation("5+6/3+5"));
-
-// Fonction pour calculer le résultat d'une ligne d'opération avec parenthèses
-function calculate(str) {
-    
-}
-
-// Fonction pour séparer les blocs de calculs entre parenthèses
-function separateParenthesis(str) {
-    return str.split("(").filter(e => e!="").join(",").split(")").filter(e => e!="").join(",").split(",");
-}
 
 // Fonction qui retourne un tableau de tous les index de position d'un caractère dans une chaîne de caractère
 function indexesOfChar(char, str) {
@@ -102,10 +92,32 @@ function indexesOfChar(char, str) {
         arrayOfIndexes.push(indexOfOccurence);
         currentIndex = indexOfOccurence + 1;
     } while (str.indexOf(char, currentIndex) != -1);
-
+    
     return arrayOfIndexes;
 }
+
+// Fonction pour calculer le résultat d'une ligne d'opération avec parenthèses
+function calculate(str) {
+    // Si la string ne contient pas de parenthèses, on gère le calcul avec la fonction précédente
+    if (!str.includes("(")) {
+        return handleSimpleCalculation(str);
+    }
+    // Sinon le but est de faire les calculs entre parenthèses d'abord et dans le bon ordre
+    // Le premier calcul à effectuer sera entre la première ")" et la "(" précédente celle-ci
+    // Je détermine leurs index
+    let indexOfClosingParenthesis = str.indexOf(")");
+    let indexofOpeningParenthesis = indexesOfChar("(", str).filter(i => i < indexOfClosingParenthesis).pop();
+    // Je calcule le bloc entre les parenthèses et je le réintègre dans la chaine de caractères
+    let strBefore = str.slice(0, indexofOpeningParenthesis);
+    let strAfter = str.slice(indexOfClosingParenthesis+1);
+    let strToCalculate = str.slice(indexofOpeningParenthesis+1, indexOfClosingParenthesis);
+    let strNew = strBefore+handleSimpleCalculation(strToCalculate)+strAfter; 
+
+    return calculate(strNew);
+}
 let exStr = "(5*((5+8)-3*(2+5)))*5"
-console.log(indexesOfChar("(", exStr))
-console.log(indexesOfChar(")", exStr))
-console.log(separateParenthesis(exStr))
+let exStr2 = "(5*-8)*5"
+// console.log(calculate(exStr2));
+console.log(handleSimpleCalculation('3*-2'))
+// console.log(indexesOfChar("(", exStr))
+// console.log(indexesOfChar(")", exStr))
