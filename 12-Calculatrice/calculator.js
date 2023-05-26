@@ -1,6 +1,6 @@
 // https://github.com/adatechschool/Exercices-individuels-Doria-Shafik-Paris/blob/master/12_calculatrice_graphique_%F0%9F%A7%AE.md
-const displayedElement = document.getElementById("display");
-const resultElement = document.getElementById("result");
+// const displayedElement = document.getElementById("display");
+// const resultElement = document.getElementById("result");
 
 function addToDisplay() {
     let displayedText = displayedElement.innerText;
@@ -55,3 +55,16 @@ function getNumberMaxDecimals(arrayOfStringifiedNumbers) {
     })
     return maxNumberDecimals;    
 }
+
+function handleCalculation(str) {
+    if (!(str.includes("/") || str.includes("*") || str.includes("-") || str.includes("+"))) {
+        return parseFloat(str);
+    }
+    if (str.includes("+")) {
+        return str.split("+").map(e => handleCalculation(e)).reduce((accumulator, currentValue) => accumulator + currentValue);
+    }
+    if (str.includes("-")) {
+        return str.split("-").map(e => handleCalculation(e)).reduce((accumulator, currentValue) => accumulator - currentValue);
+    }
+}
+console.log(handleCalculation("1-2-3+2-3+4"));
