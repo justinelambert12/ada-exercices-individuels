@@ -4,6 +4,18 @@ const resultElement = document.getElementById("result");
 
 function addToDisplay() {
     let displayedText = displayedElement.innerText;
+    // Si l'affichage à un "=" c'est que le précédent calcul est fini.
+    if (displayedText.includes("=")) {
+        // Si on appuie sur une touche avec opérateur, il faut reprendre le résultat précédent
+        if ([".", "+", "-", "*", "/"].includes(event.target.value)) {
+            displayedText = resultElement.innerText;
+            clearDisplays();
+        // Sinon on remet à 0 les affichages avant d'afficher le nouveau chiffre
+        } else {
+            clearDisplays();
+            displayedText = displayedElement.innerText;
+        }
+    } 
     // Si l'affichage est à "0" et qu'on appuie sur une touche avec un chiffre, la valeur apparaît sans le "0", donc je vide "displayedText"
     if (displayedText == "0" && !([".", "+", "-", "*", "/"].includes(event.target.value))) {
         displayedText = "";
