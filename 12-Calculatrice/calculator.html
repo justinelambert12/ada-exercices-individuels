@@ -13,7 +13,12 @@
 <body>
     <div class="container" style="width: fit-content;">
         <div class="row">
-            <div class="col" id="display" style="text-align: right; border: 2px solid black;">
+            <div class="col" id="display" style="text-align: left; border: 2px solid black;">
+                0
+            </div>
+        </div>
+        <div class="row">
+            <div class="col" id="result" style="text-align: right; border: 2px solid black;">
                 0
             </div>
         </div>
@@ -60,7 +65,7 @@
                         <input type="button" class="btn-block" onclick="addToDisplay()" value=".">
                     </div>
                     <div class="col-4" style="background-color: cyan; text-align: center; border: 2px solid black">
-                        <input type="button" class="btn-block" onclick="calculate()" value="=">
+                        <input type="button" class="btn-block" onclick="addToDisplay(); calculate()" value="=">
                     </div>
                 </div>
             </div>

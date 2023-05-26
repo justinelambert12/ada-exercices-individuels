@@ -1,5 +1,6 @@
 // https://github.com/adatechschool/Exercices-individuels-Doria-Shafik-Paris/blob/master/12_calculatrice_graphique_%F0%9F%A7%AE.md
 const displayedElement = document.getElementById("display");
+const resultElement = document.getElementById("result");
 
 function addToDisplay() {
     let displayedText = displayedElement.innerText;
@@ -28,5 +29,5 @@ function calculate() {
     let floatsOfAddition = termsOfAddition.map(e => parseFloat(e));
     let result = floatsOfAddition.reduce((accumulator, currentValue) => accumulator + currentValue);
     // J'affiche le résultat avec le bon nombre de décimales
-    displayedElement.innerText = result.toFixed(maxNumberDecimals);
+    resultElement.innerText = result.toFixed(maxNumberDecimals);
 }
