@@ -25,7 +25,7 @@ function addToDisplay() {
 }
 
 // Fonction appelée en cliquant sur le bouton "=" pour calculer le résultat et l'afficher
-function calculate() {
+function displayResult() {
     let displayedText = displayedElement.innerText;
     // je ne gère pas encore le nombre max de décimales 
     // let maxNumberDecimals = 2;
@@ -78,3 +78,9 @@ function handleSimpleCalculation(str) {
     
 }
 // console.log(handleSimpleCalculation("5+6/3+5"));
+
+// Fonction pour calculer le résultat d'une ligne d'opération avec parenthèses
+function calculate(str) {
+
+
+}
