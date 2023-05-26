@@ -56,15 +56,26 @@ function getNumberMaxDecimals(arrayOfStringifiedNumbers) {
     return maxNumberDecimals;    
 }
 
-function handleCalculation(str) {
+// Fonction pour calculer le résultat d'une ligne d'opération (sous forme d'une string) qui ne contient pas de parenthèses
+function handleSimpleCalculation(str) {
+    // Si la str ne contient pas d'opérateurs, c'est juste un nombre qu'on convertit en float
     if (!(str.includes("/") || str.includes("*") || str.includes("-") || str.includes("+"))) {
         return parseFloat(str);
     }
+    // Sinon, on gère toutes les opérations de façon récursive en partitionnant le calcul grâce aux opérateurs
+    // dans un ordre particulier pour gérer les priorités dans les calculs
     if (str.includes("+")) {
-        return str.split("+").map(e => handleCalculation(e)).reduce((accumulator, currentValue) => accumulator + currentValue);
+        return str.split("+").map(e => handleSimpleCalculation(e)).reduce((accumulator, currentValue) => accumulator + currentValue);
     }
     if (str.includes("-")) {
-        return str.split("-").map(e => handleCalculation(e)).reduce((accumulator, currentValue) => accumulator - currentValue);
+        return str.split("-").map(e => handleSimpleCalculation(e)).reduce((accumulator, currentValue) => accumulator - currentValue);
     }
+    if (str.includes("*")) {
+        return str.split("*").map(e => handleSimpleCalculation(e)).reduce((accumulator, currentValue) => accumulator * currentValue);
+    }
+    if (str.includes("/")) {
+        return str.split("/").map(e => handleSimpleCalculation(e)).reduce((accumulator, currentValue) => accumulator / currentValue);
+    }
+    
 }
-console.log(handleCalculation("1-2-3+2-3+4"));
+// console.log(handleSimpleCalculation("5+6/3+5"));
