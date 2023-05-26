@@ -1,6 +1,6 @@
 // https://github.com/adatechschool/Exercices-individuels-Doria-Shafik-Paris/blob/master/12_calculatrice_graphique_%F0%9F%A7%AE.md
-// const displayedElement = document.getElementById("display");
-// const resultElement = document.getElementById("result");
+const displayedElement = document.getElementById("display");
+const resultElement = document.getElementById("result");
 
 function addToDisplay() {
     let displayedText = displayedElement.innerText;
@@ -31,7 +31,7 @@ function displayResult() {
     // let maxNumberDecimals = 2;
     // J'affiche le résultat avec le bon nombre de décimales
     // resultElement.innerText = result.toFixed(maxNumberDecimals);
-    let result = handleSimpleCalculation(displayedText);
+    let result = calculate(displayedText);
     resultElement.innerText = result;
 }
 
