@@ -1,6 +1,6 @@
 // https://github.com/adatechschool/Exercices-individuels-Doria-Shafik-Paris/blob/master/12_calculatrice_graphique_%F0%9F%A7%AE.md
-// const displayedElement = document.getElementById("display");
-// const resultElement = document.getElementById("result");
+const displayedElement = document.getElementById("display");
+const resultElement = document.getElementById("result");
 
 function addToDisplay() {
     let displayedText = displayedElement.innerText;
@@ -27,13 +27,12 @@ function addToDisplay() {
 // Fonction appelée en cliquant sur le bouton "=" pour calculer le résultat et l'afficher
 function calculate() {
     let displayedText = displayedElement.innerText;
-    let termsOfAddition = displayedText.split("+");
-    // je cherche le nombre max de décimales dans les termes de l'opération pour afficher le résultat avec le bon nombre de chiffres
-    let maxNumberDecimals = getNumberMaxDecimals(termsOfAddition);
-    let floatsOfAddition = termsOfAddition.map(e => parseFloat(e));
-    let result = floatsOfAddition.reduce((accumulator, currentValue) => accumulator + currentValue);
+    // je ne gère pas encore le nombre max de décimales 
+    // let maxNumberDecimals = 2;
     // J'affiche le résultat avec le bon nombre de décimales
-    resultElement.innerText = result.toFixed(maxNumberDecimals);
+    // resultElement.innerText = result.toFixed(maxNumberDecimals);
+    let result = handleSimpleCalculation(displayedText);
+    resultElement.innerText = result;
 }
 
 // Fonction pour remettre à 0 les affichages
