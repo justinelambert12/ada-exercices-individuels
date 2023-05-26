@@ -1,6 +1,6 @@
 // https://github.com/adatechschool/Exercices-individuels-Doria-Shafik-Paris/blob/master/12_calculatrice_graphique_%F0%9F%A7%AE.md
-const displayedElement = document.getElementById("display");
-const resultElement = document.getElementById("result");
+// const displayedElement = document.getElementById("display");
+// const resultElement = document.getElementById("result");
 
 function addToDisplay() {
     let displayedText = displayedElement.innerText;
@@ -81,6 +81,31 @@ function handleSimpleCalculation(str) {
 
 // Fonction pour calculer le résultat d'une ligne d'opération avec parenthèses
 function calculate(str) {
-
-
+    
 }
+
+// Fonction pour séparer les blocs de calculs entre parenthèses
+function separateParenthesis(str) {
+    return str.split("(").filter(e => e!="").join(",").split(")").filter(e => e!="").join(",").split(",");
+}
+
+// Fonction qui retourne un tableau de tous les index de position d'un caractère dans une chaîne de caractère
+function indexesOfChar(char, str) {
+    if (!str.includes(char)) {
+        return [];
+    }
+
+    let arrayOfIndexes = [];
+    let currentIndex = 0;
+    do {
+        let indexOfOccurence = str.indexOf(char, currentIndex);
+        arrayOfIndexes.push(indexOfOccurence);
+        currentIndex = indexOfOccurence + 1;
+    } while (str.indexOf(char, currentIndex) != -1);
+
+    return arrayOfIndexes;
+}
+let exStr = "(5*((5+8)-3*(2+5)))*5"
+console.log(indexesOfChar("(", exStr))
+console.log(indexesOfChar(")", exStr))
+console.log(separateParenthesis(exStr))
