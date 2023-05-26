@@ -12,7 +12,7 @@ function addToDisplay() {
     displayedElement.innerText = displayedText + event.target.value;
 }
 
-// Il faut une fonction qui est appelée en appuyant sur égal pour faire le calcul
+// Fonction appelée en cliquant sur le bouton "=" pour calculer le résultat et l'afficher
 function calculate() {
     let displayedText = displayedElement.innerText;
     let termsOfAddition = displayedText.split("+");
@@ -22,6 +22,12 @@ function calculate() {
     let result = floatsOfAddition.reduce((accumulator, currentValue) => accumulator + currentValue);
     // J'affiche le résultat avec le bon nombre de décimales
     resultElement.innerText = result.toFixed(maxNumberDecimals);
+}
+
+// Fonction pour remettre à 0 les affichages
+function clearDisplays() {
+    displayedElement.innerText = "0";
+    resultElement.innerText = "0";
 }
 
 // Fonction pour retourner le nombre de décimales max dans un tableau contenant des nombres sous forme de string 
