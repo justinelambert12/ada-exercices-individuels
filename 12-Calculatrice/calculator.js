@@ -26,7 +26,7 @@ function addToDisplay() {
 }
 
 // Fonction appelée en cliquant sur le bouton "=" pour calculer le résultat et l'afficher
-// Je ne gère pas le nombre maximale de décimales 
+// Je ne gère pas le nombre maximal de décimales 
 function displayResult() {
     let displayedText = displayedElement.innerText;
     let result = calculate(displayedText);
