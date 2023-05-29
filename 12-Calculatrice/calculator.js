@@ -33,10 +33,19 @@ function displayResult() {
     resultElement.innerText = result;
 }
 
-// Fonction pour remettre à 0 les affichages
+// Fonction pour remettre à 0 les affichages, appelée entre autres par la touche "C"
 function clearDisplays() {
     displayedElement.innerText = "0";
     resultElement.innerText = "0";
+}
+
+// Fonction pour effacer un caractère sur l'affichage de l'opération en cours. Appelée par la touche "<-"
+function deleteOneChar() {
+    let displayedText = displayedElement.innerText;
+    // Si le dernier caractère est un "=" ou que l'affichage est à 0, rien ne se passe
+    if (!displayedText.includes("=") && !(displayedText.length == 1 && displayedText[0] == "0")) {
+        displayedElement.innerText = displayedText.slice(0,-1);
+    }
 }
 
 // Fonction qui retourne un tableau de tous les index de position d'un caractère dans une chaîne de caractère
