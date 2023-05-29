@@ -55,30 +55,6 @@ function getNumberMaxDecimals(arrayOfStringifiedNumbers) {
     return maxNumberDecimals;    
 }
 
-// GERE MAL LES NOMBRES NEGATIFS -> A CORRIGER
-// Fonction pour calculer le résultat d'une ligne d'opération (sous forme d'une string) qui ne contient pas de parenthèses
-function handleSimpleCalculation(str) {
-    // Si la str ne contient pas d'opérateurs, c'est juste un nombre qu'on convertit en float
-    if (!(str.includes("/") || str.includes("*") || str.includes("-") || str.includes("+"))) {
-        return parseFloat(str);
-    }
-    // Sinon, on gère toutes les opérations de façon récursive en partitionnant le calcul grâce aux opérateurs
-    // dans un ordre particulier pour gérer les priorités dans les calculs
-    if (str.includes("+")) {
-        return str.split("+").map(e => handleSimpleCalculation(e)).reduce((accumulator, currentValue) => accumulator + currentValue);
-    }
-    if (str.includes("-")) {
-        return str.split("-").map(e => handleSimpleCalculation(e)).reduce((accumulator, currentValue) => accumulator - currentValue);
-    }
-    if (str.includes("*")) {
-        return str.split("*").map(e => handleSimpleCalculation(e)).reduce((accumulator, currentValue) => accumulator * currentValue);
-    }
-    if (str.includes("/")) {
-        return str.split("/").map(e => handleSimpleCalculation(e)).reduce((accumulator, currentValue) => accumulator / currentValue);
-    }
-    
-}
-
 // Fonction qui retourne un tableau de tous les index de position d'un caractère dans une chaîne de caractère
 function indexesOfChar(char, str) {
     if (!str.includes(char)) {
@@ -96,6 +72,51 @@ function indexesOfChar(char, str) {
     return arrayOfIndexes;
 }
 
+// Fonction pour réécrire les nombres négatifs (-x en !x) dans une chaîne de caractère représentant une opération
+function transformNegativeNumbers(str) {
+    let newStrArray = str.split("");
+    let indexOfMinus = indexesOfChar("-", str);
+    indexOfMinus.forEach(function(index) {
+        // Si le "-" est précédé d'un opérateur c'est que le nombre est négatif(-x), je le réécris (!x) pour faciliter 
+        // l'ordre des opérations dans la fonction suivante "handleSimpleCalculation"
+        if (index == 0 || ["+","-","*","/"].includes(str[index-1])) {
+            newStrArray[index] = "!"
+        }
+    })
+
+    return newStrArray.join("");
+}
+
+// Fonction pour calculer le résultat d'une ligne d'opération (sous forme d'une string) qui ne contient pas de parenthèses
+function handleSimpleCalculation(str) {
+    // Si la str ne contient pas d'opérateurs, c'est juste un nombre qu'on convertit en float
+    if (!(str.includes("/") || str.includes("*") || str.includes("-") || str.includes("+"))) {
+        // Les nombres négatifs ont été réécrits (-x en !x), je les retransforme (!x -> -x)
+        if (str.includes("!")) {
+            str = "-" + str.slice(1);
+        } 
+        return parseFloat(str);
+    }
+    // Sinon, je gère toutes les opérations de façon récursive en partitionnant le calcul grâce aux opérateurs
+    // dans un ordre particulier pour gérer les priorités dans les calculs
+
+    // Avant cela je réécris les nombres négatifs (-x -> !x) pour ne pas les confondre avec une soustraction
+    str = transformNegativeNumbers(str);
+
+    if (str.includes("+")) {
+        return str.split("+").map(e => handleSimpleCalculation(e)).reduce((accumulator, currentValue) => accumulator + currentValue);
+    }
+    if (str.includes("-")) {
+        return str.split("-").map(e => handleSimpleCalculation(e)).reduce((accumulator, currentValue) => accumulator - currentValue);
+    }
+    if (str.includes("*")) {
+        return str.split("*").map(e => handleSimpleCalculation(e)).reduce((accumulator, currentValue) => accumulator * currentValue);
+    }
+    if (str.includes("/")) {
+        return str.split("/").map(e => handleSimpleCalculation(e)).reduce((accumulator, currentValue) => accumulator / currentValue);
+    }
+}
+
 // Fonction pour calculer le résultat d'une ligne d'opération avec parenthèses
 function calculate(str) {
     // Si la string ne contient pas de parenthèses, on gère le calcul avec la fonction précédente
@@ -103,7 +124,7 @@ function calculate(str) {
         return handleSimpleCalculation(str);
     }
     // Sinon le but est de faire les calculs entre parenthèses d'abord et dans le bon ordre
-    // Le premier calcul à effectuer sera entre la première ")" et la "(" précédente celle-ci
+    // Le premier calcul à effectuer sera entre la première ")" et la "(" précédant celle-ci
     // Je détermine leurs index
     let indexOfClosingParenthesis = str.indexOf(")");
     let indexofOpeningParenthesis = indexesOfChar("(", str).filter(i => i < indexOfClosingParenthesis).pop();
@@ -115,9 +136,8 @@ function calculate(str) {
 
     return calculate(strNew);
 }
-let exStr = "(5*((5+8)-3*(2+5)))*5"
-let exStr2 = "(5*-8)*5"
-// console.log(calculate(exStr2));
-console.log(handleSimpleCalculation('3*-2'))
-// console.log(indexesOfChar("(", exStr))
-// console.log(indexesOfChar(")", exStr))
+// let exStr = "(5*((5+8)-3*(2+5)))*5"
+// let exStr2 = "(5*-8)*5"
+// console.log(calculate(exStr));
+
+
