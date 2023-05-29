@@ -2,6 +2,7 @@
 const displayedElement = document.getElementById("display");
 const resultElement = document.getElementById("result");
 
+// Fonction appelée par tous les boutons chiffres, opérateurs, "=" et "."
 function addToDisplay() {
     let displayedText = displayedElement.innerText;
     // Si l'affichage à un "=" c'est que le précédent calcul est fini.
@@ -20,17 +21,14 @@ function addToDisplay() {
     if (displayedText == "0" && !([".", "+", "-", "*", "/"].includes(event.target.value))) {
         displayedText = "";
     }
-    // il faut gérer de ne pas pouvoir mettre plusieurs points (séparation décimales) à la suite
+
     displayedElement.innerText = displayedText + event.target.value;
 }
 
 // Fonction appelée en cliquant sur le bouton "=" pour calculer le résultat et l'afficher
+// Je ne gère pas le nombre maximale de décimales 
 function displayResult() {
     let displayedText = displayedElement.innerText;
-    // je ne gère pas encore le nombre max de décimales 
-    // let maxNumberDecimals = 2;
-    // J'affiche le résultat avec le bon nombre de décimales
-    // resultElement.innerText = result.toFixed(maxNumberDecimals);
     let result = calculate(displayedText);
     resultElement.innerText = result;
 }
@@ -39,20 +37,6 @@ function displayResult() {
 function clearDisplays() {
     displayedElement.innerText = "0";
     resultElement.innerText = "0";
-}
-
-// Fonction pour retourner le nombre de décimales max dans un tableau contenant des nombres sous forme de string 
-function getNumberMaxDecimals(arrayOfStringifiedNumbers) {
-    let maxNumberDecimals = 0;
-    arrayOfStringifiedNumbers.forEach(e => {
-        if (e.includes(".")) {
-            let numberDecimals = e.split(".")[1].length;
-            if (numberDecimals > maxNumberDecimals) {
-                maxNumberDecimals = numberDecimals;
-            }
-        } 
-    })
-    return maxNumberDecimals;    
 }
 
 // Fonction qui retourne un tableau de tous les index de position d'un caractère dans une chaîne de caractère
@@ -72,13 +56,13 @@ function indexesOfChar(char, str) {
     return arrayOfIndexes;
 }
 
-// Fonction pour réécrire les nombres négatifs (-x en !x) dans une chaîne de caractère représentant une opération
+// Fonction pour réécrire les nombres négatifs (-x en !x) dans une chaîne de caractère représentant une opération 
+// pour faciliter l'ordre des opérations dans la fonction suivante "handleSimpleCalculation"
 function transformNegativeNumbers(str) {
     let newStrArray = str.split("");
     let indexOfMinus = indexesOfChar("-", str);
     indexOfMinus.forEach(function(index) {
-        // Si le "-" est précédé d'un opérateur c'est que le nombre est négatif(-x), je le réécris (!x) pour faciliter 
-        // l'ordre des opérations dans la fonction suivante "handleSimpleCalculation"
+        // Si le "-" est précédé d'un opérateur ou en début de chaîne c'est que le nombre est négatif(-x), je le réécris (!x)
         if (index == 0 || ["+","-","*","/"].includes(str[index-1])) {
             newStrArray[index] = "!"
         }
@@ -123,7 +107,7 @@ function calculate(str) {
     if (!str.includes("(")) {
         return handleSimpleCalculation(str);
     }
-    // Sinon le but est de faire les calculs entre parenthèses d'abord et dans le bon ordre
+    // Sinon le but est de faire d'abord les calculs entre parenthèses et dans le bon ordre
     // Le premier calcul à effectuer sera entre la première ")" et la "(" précédant celle-ci
     // Je détermine leurs index
     let indexOfClosingParenthesis = str.indexOf(")");
@@ -136,8 +120,3 @@ function calculate(str) {
 
     return calculate(strNew);
 }
-// let exStr = "(5*((5+8)-3*(2+5)))*5"
-// let exStr2 = "(5*-8)*5"
-// console.log(calculate(exStr));
-
-
