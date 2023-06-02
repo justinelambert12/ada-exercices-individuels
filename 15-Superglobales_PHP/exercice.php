@@ -37,7 +37,7 @@
     <?php 
     if (isset($_POST['reset'])) {
         session_unset();
-        header("Refresh:0");
+        header("Location: exercice.php");
     }
     if (isset($_SESSION['first_name'])) {?>
 
