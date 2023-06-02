@@ -8,13 +8,18 @@
     <title>Document</title>
 </head>
 <body>
-    <?php $user_name = $_GET['first_name'];
-    if (!isset($user_name)) {
+    <?php 
+    if (isset($_GET['first_name'])) {
+        $user_name = $_GET['first_name'];
+    } elseif (isset($_SESSION['first_name'])) {
+        $user_name = $_SESSION['first_name'];
+    } elseif (isset($_POST['first_name'])) {
         $user_name = $_POST['first_name'];
-        if (!isset($user_name)) {
-            $user_name = "anonyme";
-        }
-    } 
+        $_SESSION['first_name'] = $user_name;
+    } else {
+        $user_name = "anonyme";
+    }
+    
     echo "<p>Hello " . $user_name . "</p>"?>
 
     <form action="exercice.php" method="post">
