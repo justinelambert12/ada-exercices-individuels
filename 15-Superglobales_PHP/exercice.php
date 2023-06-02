@@ -21,15 +21,35 @@
         $user_name = "anonyme";
     }
     
-    echo "<p>Hello " . $user_name . "</p>"
-    ?>
+    echo "<p>Hello " . $user_name . "</p>";
+    
+    if (!isset($_SESSION['first_name'])) {?>
 
     <form action="exercice.php" method="post">
         <p>Votre nom <input type="text" name="first_name" /></p>
         <p><input type="submit" value="OK"></p>
     </form>
 
-    <a href="testSession.php">Changer de page pour tester la sauvegarde de la session</a>
+    <?php }?>
+
+    <a href="testSession.php">Changer de page pour tester la sauvegarde de la session</a><br>
+
+    <?php 
+    if (isset($_POST['reset'])) {
+        session_unset();
+        header("Refresh:0");
+    }
+    if (isset($_SESSION['first_name'])) {?>
+
+    <form action="exercice.php" method="post">
+        <input type="submit" name="reset" id="reset" value="reset">
+    </form>
+
+    <?php } ?>
+
+    <?php 
+    
+    ?>
     
 </body>
 </html>
