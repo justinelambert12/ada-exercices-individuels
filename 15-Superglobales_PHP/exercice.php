@@ -1,4 +1,5 @@
 <!-- https://github.com/adatechschool/Exercices-individuels-Doria-Shafik-Paris/blob/master/16_Superglobales_PHP.md -->
+<?php session_start(); ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -20,12 +21,15 @@
         $user_name = "anonyme";
     }
     
-    echo "<p>Hello " . $user_name . "</p>"?>
+    echo "<p>Hello " . $user_name . "</p>"
+    ?>
 
     <form action="exercice.php" method="post">
         <p>Votre nom <input type="text" name="first_name" /></p>
         <p><input type="submit" value="OK"></p>
     </form>
+
+    <a href="testSession.php">Changer de page pour tester la sauvegarde de la session</a>
     
 </body>
 </html>
