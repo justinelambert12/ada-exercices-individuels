@@ -1,22 +1,22 @@
 # https://github.com/adatechschool/Exercices-individuels-Doria-Shafik-Paris/blob/master/17_demineur.md
 import random
 
-def generate_grid(M, N, K):
+def generate_play_grid(nb_row, nb_column, nb_bomb):
     #Grille vide
     grid = []
-    for i in range(M):
+    for i in range(nb_row):
         row = []
-        for j in range(N):
+        for j in range(nb_column):
             row.append("0")
         grid.append(row)
-    #K cases remplies aléatoirement
-    n_filled_cases = 0
-    while n_filled_cases < K:
-        m = random.randrange(M)
-        n = random.randrange(N)
-        if (grid[m][n] == "0"):
-            grid[m][n] = "X"
-            n_filled_cases+=1
+    #Cases "bombes" remplies aléatoirement
+    nb_filled_cases = 0
+    while nb_filled_cases < nb_bomb:
+        x = random.randrange(nb_column)
+        y = random.randrange(nb_row)
+        if (grid[y][x] == "0"):
+            grid[y][x] = "X"
+            nb_filled_cases+=1
 
     return grid
 
@@ -28,17 +28,17 @@ def display_grid(grid):
         print("\n")
 
 
-def hidden_grid(M, N):
+def generate_displayed_grid(nb_row, nb_columns):
     grid = []
-    for i in range(M):
+    for i in range(nb_row):
         row = []
-        for j in range(N):
+        for j in range(nb_columns):
             row.append("?")
         grid.append(row)
     return grid
 
 
-def select_case(x, y, grid):
+def select_square(x, y, grid):
     if (x<len(grid[0]) and y<len(grid)):
         return grid[y][x]
     else:
@@ -47,20 +47,23 @@ def select_case(x, y, grid):
 
 
 def play():
-    play_grid = generate_grid(3, 5, 2)
-    displayed_grid = hidden_grid(3, 5)
+    play_grid = generate_play_grid(3, 5, 2)
+    displayed_grid = generate_displayed_grid(3, 5)
     display_grid(displayed_grid)
     #Player turns
     for i in range(3):
-        selected_case = ""
+        selected_square = ""
         x = 0
         y = 0
-        while (selected_case == ""):
-            print("Choix de la case à révéler !")
+        while (selected_square == ""):
+            print("--Choix de la case à révéler--")
             y = int(input("Choisissez une ligne : "))
             x = int(input("Choisissez une colonne : "))
-            selected_case = select_case(x, y, play_grid)
-        displayed_grid[y][x] = selected_case
+            if (displayed_grid[y][x] != "?"):
+                print("Cette case a déjà été révélée.")
+            else:
+                selected_square = select_square(x, y, play_grid)
+        displayed_grid[y][x] = selected_square
         display_grid(displayed_grid)
         
 
