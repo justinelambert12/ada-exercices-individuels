@@ -12,10 +12,10 @@ def generate_grid(M, N, K):
     #K cases remplies aléatoirement
     n_filled_cases = 0
     while n_filled_cases < K:
-        x = random.randrange(M)
-        y = random.randrange(N)
-        if (grid[x][y] == "0"):
-            grid[x][y] = "X"
+        m = random.randrange(M)
+        n = random.randrange(N)
+        if (grid[m][n] == "0"):
+            grid[m][n] = "X"
             n_filled_cases+=1
 
     return grid
@@ -28,5 +28,40 @@ def display_grid(grid):
         print("\n")
 
 
-playGrid = generate_grid(3, 5, 2)
-display_grid(playGrid)
+def hidden_grid(M, N):
+    grid = []
+    for i in range(M):
+        row = []
+        for j in range(N):
+            row.append("?")
+        grid.append(row)
+    return grid
+
+
+def select_case(x, y, grid):
+    if (x<len(grid[0]) and y<len(grid)):
+        return grid[y][x]
+    else:
+        print("Coordonnées en-dehors de la grille !")
+        return ""
+
+
+def play():
+    play_grid = generate_grid(3, 5, 2)
+    displayed_grid = hidden_grid(3, 5)
+    display_grid(displayed_grid)
+    #Player turns
+    for i in range(3):
+        selected_case = ""
+        x = 0
+        y = 0
+        while (selected_case == ""):
+            print("Choix de la case à révéler !")
+            y = int(input("Choisissez une ligne : "))
+            x = int(input("Choisissez une colonne : "))
+            selected_case = select_case(x, y, play_grid)
+        displayed_grid[y][x] = selected_case
+        display_grid(displayed_grid)
+        
+
+play()
