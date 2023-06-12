@@ -22,10 +22,23 @@ def generate_play_grid(nb_row, nb_column, nb_bomb):
 
 
 def display_grid(grid):
+    print("   ", end="|")
+    for i in range(len(grid[0])):
+        if (i<10):
+            print(" ", i, " ", end="|")
+        else:
+            print("  "+str(i)+" ", end="|")
+    print("\n")
+    j = 0
     for row in grid:
+        if (j<10):
+            print(j, " ", end="|")
+        else:
+            print(str(j)+" ", end="|")
         for el in row:
-            print(el,end=" ")
+            print(" ", el, " ", end=" ")
         print("\n")
+        j+=1
 
 
 def generate_displayed_grid(nb_row, nb_columns):
@@ -51,7 +64,7 @@ def play():
     displayed_grid = generate_displayed_grid(3, 5)
     display_grid(displayed_grid)
     #Player turns
-    for i in range(3):
+    for i in range(1):
         selected_square = ""
         x = 0
         y = 0
