@@ -59,15 +59,27 @@ def select_square(x, y, grid):
         return ""
 
 
+def has_won(play_grid, displayed_grid):
+    #Je vérifie que les seules cases non découvertes ("?") qui restent sont celles qui ont des bombes ("X")
+    for i in range(len(play_grid)):
+        for j in range(len(play_grid[0])):
+            if (displayed_grid[i][j] == "?" and play_grid[i][j] != "X"):
+                return False
+    return True
+
+
 def play():
+    game_on = True
     play_grid = generate_play_grid(3, 5, 2)
     displayed_grid = generate_displayed_grid(3, 5)
     display_grid(displayed_grid)
-    #Player turns
-    for i in range(1):
+    # display_grid(play_grid)
+    #Tours de jeu
+    while (game_on):
         selected_square = ""
         x = 0
         y = 0
+        #Choix d'une case à révéler par le joueur
         while (selected_square == ""):
             print("--Choix de la case à révéler--")
             y = int(input("Choisissez une ligne : "))
@@ -76,8 +88,17 @@ def play():
                 print("Cette case a déjà été révélée.")
             else:
                 selected_square = select_square(x, y, play_grid)
+        #Révelation de la case
         displayed_grid[y][x] = selected_square
         display_grid(displayed_grid)
+        # display_grid(play_grid)
+        #Vérification des conditions de victoire ou défaite
+        if (selected_square == "X"):
+            print("BOOM ! Vous avez perdu.")
+            game_on = False
+        elif (has_won(play_grid, displayed_grid)):
+            print("BRAVO ! Vous avez tout déminé et gagné.")
+            game_on = False
         
 
 play()
