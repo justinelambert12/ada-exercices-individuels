@@ -1,4 +1,7 @@
 # https://github.com/adatechschool/Exercices-individuels-Doria-Shafik-Paris/blob/master/17_demineur.md
+# TODO : Refactor code -> change generation of play_grid by adding the number of bombs around each square which is not a bomb ?
+# TODO : add user interface to click on square instead of selecting them in the terminal
+# TODO : when click on an empty square (0 bomb around) reveal all empty squares around ?   
 import random
 
 def generate_play_grid(nb_row, nb_column, nb_bomb):
