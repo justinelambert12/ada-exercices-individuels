@@ -68,14 +68,36 @@ def has_won(play_grid, displayed_grid):
     return True
 
 
+def has_bomb(x, y, grid):
+    #Si les coordonnées sont en-dehors de la grille, je renvoie False
+    if (x<0 or x>=len(grid[0]) or y<0 or y>=len(grid)):
+        return False
+    #Sinon je vérifie qu'il y a une bombe
+    return (select_square(x, y, grid) == "X")
+
+
+def nb_bombs_around(x, y, grid):
+    nb_bombs = 0
+    for i in [x-1, x, x+1]:
+        for j in [y-1, y, y+1]:
+            if (has_bomb(i, j, grid)):
+                nb_bombs += 1
+    return nb_bombs
+
+
 def play():
+    nb_row = 3
+    nb_column = 5
+    nb_bomb = 2
+
     game_on = True
-    play_grid = generate_play_grid(3, 5, 2)
-    displayed_grid = generate_displayed_grid(3, 5)
-    display_grid(displayed_grid)
-    # display_grid(play_grid)
+    play_grid = generate_play_grid(nb_row, nb_column, nb_bomb)
+    displayed_grid = generate_displayed_grid(nb_row, nb_column)
     #Tours de jeu
     while (game_on):
+        display_grid(displayed_grid)
+        display_grid(play_grid)
+
         selected_square = ""
         x = 0
         y = 0
@@ -89,9 +111,11 @@ def play():
             else:
                 selected_square = select_square(x, y, play_grid)
         #Révelation de la case
-        displayed_grid[y][x] = selected_square
-        display_grid(displayed_grid)
-        # display_grid(play_grid)
+        if (selected_square == "X"):
+            displayed_grid[y][x] = selected_square
+        else:
+            displayed_grid[y][x] = str(nb_bombs_around(x, y, play_grid))
+        print("\n")
         #Vérification des conditions de victoire ou défaite
         if (selected_square == "X"):
             print("BOOM ! Vous avez perdu.")
@@ -99,6 +123,8 @@ def play():
         elif (has_won(play_grid, displayed_grid)):
             print("BRAVO ! Vous avez tout déminé et gagné.")
             game_on = False
+    display_grid(displayed_grid)
+    print("--FIN DU JEU--")
         
 
 play()
