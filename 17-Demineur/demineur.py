@@ -88,14 +88,16 @@ def has_won(play_grid, displayed_grid):
 
 
 def play():
-    nb_row = 3
+    nb_row = 5
     nb_column = 5
-    nb_bomb = 2
+    nb_bomb = 6
 
     game_on = True
     displayed_grid = generate_empty_grid(nb_row, nb_column)
     play_grid = generate_play_grid(displayed_grid, nb_bomb)
     #Tours de jeu
+    print("--NOUVELLE PARTIE--")
+    print(f"Il y a {nb_bomb} bombes à trouver.")
     while (game_on):
         display_grid(displayed_grid)
         # display_grid(play_grid)
@@ -124,6 +126,10 @@ def play():
             game_on = False
     display_grid(displayed_grid)
     print("--FIN DU JEU--")
-        
+    reload = input("Voulez-vous rejouer ? (o/n) : ")
+    if (reload == "o"):
+        print("\n")
+        play()
+    
 
 play()
