@@ -41,9 +41,9 @@ const exp3 = /\b[dl]es?\b/g;
 // ETAPE 4 : Écrire la regex qui retourne le nombre de caractères alphabétiques dans la chaine
 const exp4 = /[a-zA-Z]/g;
 // ETAPE 5 : Écrire l'expression qui renvoie tous les caractères spéciaux présents dans la phrase (ponctuation et accents)
-const exp5 = /[^(\w|\s)]/g;
+const exp5 = /[^\w\s]/g;
 
 
-const res = str.match(exp3);
+const res = str.match(exp5);
 console.log("res : ", res, "/ nombre d'occurrences :", res.length);
 
