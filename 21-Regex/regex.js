@@ -37,13 +37,13 @@ const exp1 = /\bde\b/g;
 // ETAPE 2 : ajouter un opérateur logique OR (|) pour avoir dans le même résultat le nombre articles "de" et "des".
 const exp2 = /\b(de|des)\b/g;
 // ETAPE 3 : Utiliser un "?" pour, avec la même expression, récuperer le nombre de "de", "des" et "les"
-const exp3 = /\b(d|l)es?\b/g;
+const exp3 = /\b[dl]es?\b/g;
 // ETAPE 4 : Écrire la regex qui retourne le nombre de caractères alphabétiques dans la chaine
 const exp4 = /[a-zA-Z]/g;
 // ETAPE 5 : Écrire l'expression qui renvoie tous les caractères spéciaux présents dans la phrase (ponctuation et accents)
-const exp = /[^(\w|\s)]/g;
+const exp5 = /[^(\w|\s)]/g;
 
 
-const res = str.match(exp);
+const res = str.match(exp3);
 console.log("res : ", res, "/ nombre d'occurrences :", res.length);
 
