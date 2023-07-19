@@ -1,7 +1,8 @@
 # https://github.com/adatechschool/Exercices-individuels-Doria-Shafik-Paris/blob/master/17_demineur.md
 # TODO : Refactor code 
 # TODO : add user interface to click on square instead of selecting them in the terminal
-# TODO : when click on an empty square (0 bomb around) reveal all empty squares around ?   
+# TODO : when click on an empty square (0 bomb around) reveal all empty squares around ? 
+# REVUE : algorithme de "propagation de feu" pour révéler les cases
 import copy
 import random
 
@@ -16,6 +17,7 @@ def generate_empty_grid(nb_row, nb_columns):
 
 
 def display_grid(grid):
+    # REVUE : il existe des fonctions pour gérer le padding ('leftpad'?)
     print("   ", end="|")
     for i in range(len(grid[0])):
         if (i<10):
@@ -45,6 +47,7 @@ def select_square(x, y, grid):
 
 def has_bomb(x, y, grid):
     #Si les coordonnées sont en-dehors de la grille, je renvoie False
+    # REVUE : Opérateur python in range ? if x not in range(len(grid[0]))
     if (x<0 or x>=len(grid[0]) or y<0 or y>=len(grid)):
         return False
     #Sinon je vérifie qu'il y a une bombe
@@ -71,6 +74,7 @@ def generate_play_grid(empty_grid, nb_bomb):
             play_grid[y][x] = "X"
             nb_filled_cases+=1
     #Autres cases remplies par le compte de bombes autour (8 cases adjacentes)
+    # REVUE : devrait être séparé dans une autre fonction car ne dépend pas de ce qu'il y a au-dessus
     for i in range(len(play_grid)):
         for j in range(len(play_grid[0])):
             if (play_grid[i][j] == "?"):
@@ -88,17 +92,20 @@ def has_won(play_grid, displayed_grid):
 
 
 def play():
-    nb_row = 5
-    nb_column = 5
+    # REVUE : à découper, chaque boucle while pourrait être une fonction séparée
+    nb_row = 9
+    nb_column = 9
     nb_bomb = 6
 
     game_on = True
     displayed_grid = generate_empty_grid(nb_row, nb_column)
+    # REVUE : renommer la fonction "generate_grid_with_bombs" ? secret_grid
     play_grid = generate_play_grid(displayed_grid, nb_bomb)
     #Tours de jeu
     print("--NOUVELLE PARTIE--")
     print(f"Il y a {nb_bomb} bombes à trouver.")
     while (game_on):
+        # REVUE : Faire une méthode "un tour"
         display_grid(displayed_grid)
         # display_grid(play_grid)
 
@@ -107,6 +114,8 @@ def play():
         y = 0
         #Choix d'une case à révéler par le joueur
         while (selected_square == ""):
+            # REVUE : faire une nouvelle méthode "ask_user_next_square"
+            # REVUE : x,y,selected_square -> un objet ?
             print("--Choix de la case à révéler--")
             y = int(input("Choisissez une ligne : "))
             x = int(input("Choisissez une colonne : "))
@@ -129,7 +138,14 @@ def play():
     reload = input("Voulez-vous rejouer ? (o/n) : ")
     if (reload == "o"):
         print("\n")
+        # REVUE : plutôt qu'une fonction récursive -> nouvelle fonction "démarrer la partie"
         play()
     
 
 play()
+
+
+def test_structure_python():
+    arr = [1, 2, 3, 4]
+    squared_arr = [x*x for x in arr if x%2==0]
+    print(squared_arr)
