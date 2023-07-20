@@ -3,4 +3,6 @@ import json;
 f = open("pokemon.json")
 # print(f)
 data = json.load(f)
-print(data)
+# print(data)
+pokemonTable = data["pokemon"]
+print(pokemonTable)
