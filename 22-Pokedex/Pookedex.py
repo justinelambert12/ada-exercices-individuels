@@ -7,7 +7,6 @@ data = json.load(f)
 pokemonTable = data["pokemon"]
 # print(pokemonTable)
 pokemonTest = pokemonTable[0]
-
 # Combien de pokemon dans les données ?
 def getNumberOfPokemon(pokemons):
     number = len(pokemons)
@@ -49,7 +48,7 @@ def getAllPokemonsHeavierThan(pokemons, minWeight):
     else:
         print(f"Aucun pokemon ne pese plus de {minWeight} kg !")
     return heavyPokemons
-# getAllPokemonsHeavierThan(pokemonTable, 10) (modifié)
+# getAllPokemonsHeavierThan(pokemonTable, 10)
 
 def isPokemonOneHeavierPokemonstwo(pokemonOne, pokemonTwo):
     return getPokemonWeight(pokemonOne)>getPokemonWeight(pokemonTwo)
@@ -68,3 +67,32 @@ def sortPokemonByWeight(pokemons):
     return pokemons
 # pokemonsHeavierThan100= getAllPokemonsHeavierThan(pokemonTable, 100)
 # print(sortPokemonByWeight(pokemonsHeavierThan100))
+
+#ETAPE 3 - Afficher les évolutions d'un pokemon
+def getPokemonByName(pokemons,pokemonName):
+    for pokemon in pokemons:
+        if getPokemonName(pokemon)==pokemonName:
+            return pokemon
+    return ''
+Bulbasaur=getPokemonByName(pokemonTable,'Bulbasaur')
+def getNextEvolutionsName(pokemon):
+    evolutionNameTable=[]
+    evolutions=pokemon['next_evolution']
+    for evolution in evolutions:
+        evolutionNameTable.append(getPokemonName(evolution))
+    return evolutionNameTable
+# print(getNextEvolutionsName(Bulbasaur))
+
+def displayPokemonEvolutions(pokemons, pokemonName):
+    pokemonEvolutionString=pokemonName
+    targetedPokemon = getPokemonByName(pokemons,pokemonName)
+    if targetedPokemon=='':
+        print('This Pokemon doesn\'t exist')
+        return ''
+    evolutionsTable = getNextEvolutionsName(targetedPokemon)
+    if len(evolutionsTable)>0:
+        for evolution in evolutionsTable:
+            pokemonEvolutionString +='-->'+evolution
+    return pokemonEvolutionString
+    
+print(displayPokemonEvolutions(pokemonTable,'Ivysaur'))
