@@ -5,4 +5,12 @@ f = open("pokemon.json")
 data = json.load(f)
 # print(data)
 pokemonTable = data["pokemon"]
-print(pokemonTable)
+# print(pokemonTable)
+
+# Combien de pokemon dans les données ?
+def getNumberOfPokemon(table):
+    number = len(table)
+    print(number)
+    return number
+# getNumberOfPokemon(pokemonTable)
+
