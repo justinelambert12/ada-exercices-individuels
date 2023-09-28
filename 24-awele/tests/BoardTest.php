@@ -12,7 +12,8 @@ final class BoardTest extends TestCase
       .sprintf('%1$s%1$s%1$s%1$s%1$s%1$s', '(4)')."\n"
       ." G "." H "." I "." J "." K "." L ";
     
-    $this->assertSame($expectedDisplay, $beginningBoard->display());
+    $this->expectOutputString($expectedDisplay);
+    $beginningBoard->display();
   }
 
   public function testDisplayEmptyBoard(): void
@@ -23,7 +24,8 @@ final class BoardTest extends TestCase
     .sprintf('%1$s%1$s%1$s%1$s%1$s%1$s', '(0)')."\n"
     ." G "." H "." I "." J "." K "." L ";
 
-    $this->assertSame($expectedDisplay, $emptyBoard->display());
+    $this->expectOutputString($expectedDisplay);
+    $emptyBoard->display();
   }
 
   public function testIsEmptyFunctionReturnsTrueWhenBoardEmpty(): void
