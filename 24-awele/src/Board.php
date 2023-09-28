@@ -17,4 +17,9 @@ final class Board
     print($display);
     return $display;
   }
+
+  public function isEmpty(): bool 
+  {
+    return true;
+  }
 }
