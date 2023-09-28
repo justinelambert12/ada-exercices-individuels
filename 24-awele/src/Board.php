@@ -1,29 +1,46 @@
 <?php declare(strict_types=1);
 final class Board
 {
-  private int $seedsInEachPit;
+  const BOARD_LETTERS = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L"];
+  private $pits;
+
   public function __construct(int $seedsInEachPit=4)
   {
-    $this->seedsInEachPit = $seedsInEachPit;
+    foreach(self::BOARD_LETTERS as $letter) {
+      $this->pits[] = new Pit($letter, $seedsInEachPit);
+    }
   }
 
-  public function display(): string
-  {
-    $display = " A "." B "." C "." D "." E "." F "."\n"
-      .sprintf('%1$s%1$s%1$s%1$s%1$s%1$s', '('.$this->seedsInEachPit.')')."\n"
-      .sprintf('%1$s%1$s%1$s%1$s%1$s%1$s', '('.$this->seedsInEachPit.')')."\n"
-      ." G "." H "." I "." J "." K "." L ";
+  public function display(): void
+  {    
+    $rows = [[], [], [], []];
+    for($i = 0, $size = count($this->pits); $i < $size/2; ++$i) {
+      $upperPit = $this->pits[$i];
+      $lowerPit = $this->pits[$size/2+$i];
+      $rows[0][] = " ".$upperPit->name." ";
+      $rows[1][] = "(".$upperPit->seeds.")";
+      $rows[2][] = "(".$lowerPit->seeds.")";
+      $rows[3][] = " ".$lowerPit->name." ";
+    }
     
+    $display = [];
+    foreach($rows as $row) {
+      $display = array_merge($display, $row);
+      $display[] = "\n";
+    }
+    array_pop($display);
+    $display = implode($display);
+
     print($display);
-    return $display;
   }
 
   public function isEmpty(): bool 
   {
-    $emptyBoard = new Board(0);
-    if ($this->display()===$emptyBoard->display()) {
-      return true;
+    foreach($this->pits as $pit) {
+      if ($pit->seeds != 0) {
+        return false;
+      }
     }
-    return false;
+    return true;
   }
 }
