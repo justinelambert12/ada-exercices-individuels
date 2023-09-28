@@ -20,6 +20,10 @@ final class Board
 
   public function isEmpty(): bool 
   {
-    return true;
+    $emptyBoard = new Board(0);
+    if ($this->display()===$emptyBoard->display()) {
+      return true;
+    }
+    return false;
   }
 }

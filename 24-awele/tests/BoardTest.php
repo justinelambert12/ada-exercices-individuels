@@ -31,4 +31,10 @@ final class BoardTest extends TestCase
     $emptyBoard = new Board(0);
     $this->assertSame(true, $emptyBoard->isEmpty());
   }
+
+  public function testIsEmptyFunctionReturnsFalseWhenBoardFilled(): void
+  {
+    $filledBoard = new Board(4);
+    $this->assertSame(false, $filledBoard->isEmpty());
+  }
 }
